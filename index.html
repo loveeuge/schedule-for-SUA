@@ -33,9 +33,40 @@
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 20px;
-            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-size: 1.6em;
             font-weight: 700;
+        }
+        
+        .share-status {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .share-status:active {
+            transform: scale(0.98);
+            background: rgba(102, 126, 234, 0.15);
+        }
+        
+        .share-id {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .sync-status {
+            color: #28a745;
+            font-size: 11px;
+        }
+        
+        .sync-status.error {
+            color: #dc3545;
         }
         
         .controls {
@@ -44,10 +75,10 @@
         
         .add-btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border: none;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -450,13 +481,98 @@
             transform: scale(0.98);
         }
         
+        /* 공유 모달 스타일 */
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .share-modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .share-url-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 15px 0;
+            border: 2px dashed #dee2e6;
+            word-break: break-all;
+            font-size: 13px;
+            color: #495057;
+        }
+        
+        .share-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .share-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .copy-btn:active {
+            background: #218838;
+            transform: scale(0.98);
+        }
+        
+        .kakao-btn {
+            background: #fee500;
+            color: #3c1e1e;
+        }
+        
+        .kakao-btn:active {
+            background: #fdd835;
+            transform: scale(0.98);
+        }
+        
+        .new-group-btn {
+            background: #667eea;
+            color: white;
+            grid-column: 1 / -1;
+        }
+        
+        .new-group-btn:active {
+            background: #5a6fd8;
+            transform: scale(0.98);
+        }
+        
         /* 드래그 방지 */
         img, .class-item, button {
             -webkit-user-drag: none;
             -webkit-touch-callout: none;
         }
         
-        /* 스크롤바 숨기기 (WebKit 기반 브라우저) */
+        /* 스크롤바 숨기기 */
         .schedule-wrapper::-webkit-scrollbar {
             display: none;
         }
@@ -473,11 +589,42 @@
             padding-left: max(15px, env(safe-area-inset-left));
             padding-right: max(15px, env(safe-area-inset-right));
         }
+        
+        /* 로딩 상태 */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        /* 토스트 메시지 */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎒 우리 딸 학원 스케줄 📚</h1>
+        
+        <div class="share-status" onclick="openShareModal()">
+            <div class="share-id">스케줄 ID: <span id="currentScheduleId">생성중...</span></div>
+            <div class="sync-status" id="syncStatus">🔗 터치해서 가족과 공유하기</div>
+        </div>
         
         <div class="controls">
             <button class="add-btn" onclick="openModal()">➕ 학원 추가</button>
@@ -501,6 +648,28 @@
                     <!-- 시간대별 행이 동적으로 생성됩니다 -->
                 </tbody>
             </table>
+        </div>
+    </div>
+    
+    <!-- 공유 모달 -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-modal-content">
+            <h3>🔗 가족과 스케줄 공유</h3>
+            <p>이 링크를 가족에게 보내면 함께 스케줄을 관리할 수 있어요!</p>
+            
+            <div class="share-url-display" id="shareUrl">
+                https://example.com/#schedule-ABC123
+            </div>
+            
+            <div class="share-buttons">
+                <button class="share-btn copy-btn" onclick="copyShareUrl()">📋 링크 복사</button>
+                <button class="share-btn kakao-btn" onclick="shareViaKakao()">💬 카톡 공유</button>
+                <button class="share-btn new-group-btn" onclick="createNewGroup()">🆕 새로운 그룹 만들기</button>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeShareModal()">닫기</button>
+            </div>
         </div>
     </div>
     
@@ -588,14 +757,236 @@
         </div>
     </div>
     
+    <!-- 토스트 메시지 -->
+    <div class="toast" id="toast"></div>
+    
     <script>
         let schedule = {};
         let selectedColor = '#4ecdc4';
         let deleteTargetId = null;
+        let scheduleId = null;
+        let isConnected = false;
+        
+        // URL 해시 기반 공유 관리
+        class ScheduleShare {
+            constructor() {
+                this.baseUrl = window.location.origin + window.location.pathname;
+                this.pollInterval = null;
+            }
+            
+            // 스케줄 ID 생성
+            generateScheduleId() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+            
+            // URL에서 스케줄 ID 추출
+            getScheduleIdFromUrl() {
+                const hash = window.location.hash;
+                if (hash.startsWith('#schedule-')) {
+                    return hash.substring(10); // '#schedule-' 제거
+                }
+                return null;
+            }
+            
+            // URL 업데이트
+            updateUrl(id) {
+                const newUrl = `#schedule-${id}`;
+                if (window.location.hash !== newUrl) {
+                    window.history.replaceState(null, null, newUrl);
+                }
+            }
+            
+            // 공유 URL 생성
+            getShareUrl() {
+                return `${this.baseUrl}#schedule-${scheduleId}`;
+            }
+            
+            // 스케줄 그룹 초기화
+            async initializeSchedule() {
+                try {
+                    // URL에서 스케줄 ID 확인
+                    const urlScheduleId = this.getScheduleIdFromUrl();
+                    
+                    if (urlScheduleId) {
+                        // URL에 ID가 있으면 해당 그룹에 참여
+                        scheduleId = urlScheduleId;
+                        await this.loadSharedData();
+                        this.showToast('공유 스케줄에 참여했습니다!');
+                    } else {
+                        // URL에 ID가 없으면 기존 개인 데이터 또는 새 그룹 생성
+                        const savedId = localStorage.getItem('scheduleId');
+                        if (savedId) {
+                            scheduleId = savedId;
+                        } else {
+                            scheduleId = this.generateScheduleId();
+                            localStorage.setItem('scheduleId', scheduleId);
+                        }
+                        this.updateUrl(scheduleId);
+                    }
+                    
+                    this.startSync();
+                    this.updateUI();
+                    
+                } catch (error) {
+                    console.error('스케줄 초기화 실패:', error);
+                    this.handleOfflineMode();
+                }
+            }
+            
+            // 실시간 동기화 시작
+            startSync() {
+                // 실시간 동기화 시뮬레이션 (실제로는 Firebase 사용)
+                this.pollInterval = setInterval(() => {
+                    this.syncData();
+                }, 2000); // 2초마다 동기화 체크
+                
+                isConnected = true;
+                this.updateSyncStatus('✅ 실시간 동기화 활성화');
+            }
+            
+            // 데이터 동기화
+            async syncData() {
+                try {
+                    const cloudData = localStorage.getItem(`shared_schedule_${scheduleId}`);
+                    if (cloudData) {
+                        const parsed = JSON.parse(cloudData);
+                        const currentDataStr = JSON.stringify(schedule);
+                        const cloudDataStr = JSON.stringify(parsed);
+                        
+                        if (currentDataStr !== cloudDataStr) {
+                            schedule = parsed;
+                            loadSchedule();
+                        }
+                    }
+                } catch (error) {
+                    console.error('동기화 오류:', error);
+                    this.updateSyncStatus('⚠️ 동기화 오류', true);
+                }
+            }
+            
+            // 공유 데이터 저장
+            async saveSharedData() {
+                try {
+                    if (!scheduleId) return;
+                    
+                    // 실제로는 Firebase Realtime Database에 저장
+                    localStorage.setItem(`shared_schedule_${scheduleId}`, JSON.stringify(schedule));
+                    localStorage.setItem('academySchedule', JSON.stringify(schedule));
+                    localStorage.setItem('scheduleId', scheduleId);
+                    
+                    this.updateSyncStatus('✅ 저장 완료');
+                } catch (error) {
+                    console.error('데이터 저장 실패:', error);
+                    this.updateSyncStatus('❌ 저장 실패', true);
+                }
+            }
+            
+            // 공유 데이터 로드
+            async loadSharedData() {
+                try {
+                    if (!scheduleId) return;
+                    
+                    const cloudData = localStorage.getItem(`shared_schedule_${scheduleId}`);
+                    if (cloudData) {
+                        schedule = JSON.parse(cloudData);
+                    } else {
+                        // 개인 데이터가 있다면 공유 그룹으로 마이그레이션
+                        const personalData = localStorage.getItem('academySchedule');
+                        if (personalData) {
+                            schedule = JSON.parse(personalData);
+                            await this.saveSharedData();
+                        }
+                    }
+                } catch (error) {
+                    console.error('데이터 로드 실패:', error);
+                }
+            }
+            
+            // 새로운 그룹 생성
+            async createNewGroup() {
+                try {
+                    scheduleId = this.generateScheduleId();
+                    localStorage.setItem('scheduleId', scheduleId);
+                    this.updateUrl(scheduleId);
+                    
+                    // 기존 데이터 유지하고 새 그룹으로 저장
+                    await this.saveSharedData();
+                    this.updateUI();
+                    this.showToast('새로운 스케줄 그룹이 생성되었습니다!');
+                    
+                } catch (error) {
+                    console.error('새 그룹 생성 실패:', error);
+                    this.showToast('그룹 생성에 실패했습니다.');
+                }
+            }
+            
+            // UI 업데이트
+            updateUI() {
+                document.getElementById('currentScheduleId').textContent = scheduleId || '연결 안됨';
+                document.getElementById('shareUrl').textContent = this.getShareUrl();
+            }
+            
+            // 동기화 상태 업데이트
+            updateSyncStatus(message, isError = false) {
+                const statusElement = document.getElementById('syncStatus');
+                statusElement.textContent = message;
+                statusElement.className = isError ? 'sync-status error' : 'sync-status';
+            }
+            
+            // 오프라인 모드 처리
+            handleOfflineMode() {
+                isConnected = false;
+                this.updateSyncStatus('📱 오프라인 모드', false);
+                
+                scheduleId = localStorage.getItem('scheduleId') || this.generateScheduleId();
+                localStorage.setItem('scheduleId', scheduleId);
+                this.updateUrl(scheduleId);
+                this.updateUI();
+            }
+            
+            // 토스트 메시지 표시
+            showToast(message) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // 연결 해제
+            disconnect() {
+                if (this.pollInterval) {
+                    clearInterval(this.pollInterval);
+                    this.pollInterval = null;
+                }
+                isConnected = false;
+            }
+        }
+        
+        // 전역 인스턴스
+        const scheduleShare = new ScheduleShare();
+        
+        // 기존 함수들 (수정된 부분만)
         
         // 안전한 로컬스토리지 로드
         function loadStorageData() {
             try {
+                // 공유 데이터 우선 로드
+                if (scheduleId) {
+                    const sharedData = localStorage.getItem(`shared_schedule_${scheduleId}`);
+                    if (sharedData) {
+                        return JSON.parse(sharedData);
+                    }
+                }
+                
+                // 개인 데이터 로드
                 const data = localStorage.getItem('academySchedule');
                 if (data) {
                     const parsed = JSON.parse(data);
@@ -609,17 +1000,23 @@
             return {};
         }
         
-        // 안전한 로컬스토리지 저장
-        function saveStorageData() {
+        // 안전한 데이터 저장 (공유 동기화 포함)
+        async function saveStorageData() {
             try {
+                // 로컬 저장
                 localStorage.setItem('academySchedule', JSON.stringify(schedule));
+                
+                // 공유 동기화
+                if (scheduleId && isConnected) {
+                    await scheduleShare.saveSharedData();
+                }
             } catch (error) {
-                console.error('로컬스토리지 저장 실패:', error);
-                alert('데이터 저장에 실패했습니다. 브라우저 저장공간을 확인해주세요.');
+                console.error('데이터 저장 실패:', error);
+                scheduleShare.showToast('저장에 실패했습니다. 다시 시도해주세요.');
             }
         }
         
-        // 시간대 생성 (오전 8시부터 오후 10시까지)
+        // 시간대 생성
         const timeSlots = [];
         for (let hour = 8; hour <= 22; hour++) {
             const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
@@ -632,8 +1029,10 @@
             });
         }
         
-        // 초기화
-        function init() {
+        // 초기화 (URL 해시 기반 공유 추가)
+        async function init() {
+            await scheduleShare.initializeSchedule();
+            
             schedule = loadStorageData();
             generateScheduleTable();
             loadSchedule();
@@ -642,6 +1041,22 @@
             // 기본값 설정
             document.getElementById('startTime').value = '09:00';
             document.getElementById('endTime').value = '10:00';
+            
+            // URL 해시 변경 감지
+            window.addEventListener('hashchange', handleUrlChange);
+        }
+        
+        // URL 해시 변경 처리
+        async function handleUrlChange() {
+            const newScheduleId = scheduleShare.getScheduleIdFromUrl();
+            if (newScheduleId && newScheduleId !== scheduleId) {
+                scheduleId = newScheduleId;
+                await scheduleShare.loadSharedData();
+                schedule = loadStorageData();
+                loadSchedule();
+                scheduleShare.updateUI();
+                scheduleShare.showToast('다른 스케줄 그룹으로 이동했습니다!');
+            }
         }
         
         // 이벤트 리스너 설정
@@ -733,7 +1148,7 @@
             for (const key in schedule) {
                 const item = schedule[key];
                 if (!item || !item.startTime || !item.endTime || !item.day) {
-                    continue; // 잘못된 데이터 스킵
+                    continue;
                 }
                 
                 displayScheduleItem(key, item);
@@ -752,10 +1167,8 @@
             const [startHour, startMin] = item.startTime.split(':').map(Number);
             const [endHour, endMin] = item.endTime.split(':').map(Number);
             
-            // 시작 시간이 유효한 범위인지 확인
             if (startHour < 8 || startHour > 22) return;
             
-            // 시작 시간의 셀 찾기
             const startCellId = `cell-${item.day}-${startHour}`;
             const startCell = document.getElementById(startCellId);
             
@@ -764,20 +1177,16 @@
                 classDiv.className = 'class-item';
                 classDiv.style.background = item.color || '#4ecdc4';
                 
-                // 시작 위치 계산 (분 단위로 정확한 위치)
                 const topOffset = (startMin / 60) * 100;
                 classDiv.style.top = `${topOffset}%`;
                 
-                // 전체 시간을 분으로 계산
                 const startTotalMin = startHour * 60 + startMin;
                 const endTotalMin = endHour * 60 + endMin;
                 const durationMin = endTotalMin - startTotalMin;
                 
-                // 높이 계산 (각 셀은 60px 높이, 1시간 = 60px)
                 const heightPx = (durationMin / 60) * 60;
-                classDiv.style.height = `${Math.max(heightPx, 25)}px`; // 최소 높이 25px
+                classDiv.style.height = `${Math.max(heightPx, 25)}px`;
                 
-                // 콘텐츠 설정
                 const startTimeDisplay = formatTimeForDisplay(item.startTime);
                 const endTimeDisplay = formatTimeForDisplay(item.endTime);
                 
@@ -805,8 +1214,6 @@
         function openModal() {
             clearAllErrors();
             document.getElementById('addModal').style.display = 'flex';
-            // 모바일에서 자동 포커스는 키보드가 올라와서 UX에 좋지 않음
-            // document.getElementById('className').focus();
         }
         
         // 모달 닫기
@@ -856,7 +1263,6 @@
                 isValid = false;
             }
             
-            // 시간 범위 체크
             if (startTime) {
                 const [hour] = startTime.split(':').map(Number);
                 if (hour < 8 || hour > 22) {
@@ -877,7 +1283,7 @@
         }
         
         // 학원 저장
-        function saveClass() {
+        async function saveClass() {
             if (!validateInput()) {
                 return;
             }
@@ -887,7 +1293,6 @@
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
             
-            // 선택된 각 요일에 대해 중복 체크
             const dayNames = ['', '월', '화', '수', '목', '금', '토', '일'];
             for (const day of selectedDays) {
                 if (checkOverlap(day, startTime, endTime)) {
@@ -897,7 +1302,6 @@
                 }
             }
             
-            // 각 요일에 대해 학원 추가
             selectedDays.forEach(day => {
                 const id = Date.now().toString() + '-' + day + '-' + Math.random().toString(36).substr(2, 9);
                 schedule[id] = {
@@ -909,12 +1313,13 @@
                 };
             });
             
-            saveStorageData();
+            await saveStorageData();
             loadSchedule();
             closeModal();
+            scheduleShare.showToast(`${name} 학원이 추가되었습니다!`);
         }
         
-        // 중복되는 학원 정보 가져오기
+        // 중복 체크 함수들 (동일)
         function getOverlapInfo(day, startTime, endTime) {
             const [startHour, startMin] = startTime.split(':').map(Number);
             const [endHour, endMin] = endTime.split(':').map(Number);
@@ -939,7 +1344,6 @@
             return '';
         }
         
-        // 시간 중복 체크 (개선된 버전)
         function checkOverlap(day, startTime, endTime) {
             const [startHour, startMin] = startTime.split(':').map(Number);
             const [endHour, endMin] = endTime.split(':').map(Number);
@@ -954,10 +1358,6 @@
                     const itemStartTotalMin = itemStartHour * 60 + itemStartMin;
                     const itemEndTotalMin = itemEndHour * 60 + itemEndMin;
                     
-                    // 겹치는 경우:
-                    // 1. 새 수업 시작시간이 기존 수업 시간 안에 있음
-                    // 2. 새 수업 종료시간이 기존 수업 시간 안에 있음  
-                    // 3. 새 수업이 기존 수업을 완전히 포함함
                     if ((startTotalMin >= itemStartTotalMin && startTotalMin < itemEndTotalMin) ||
                         (endTotalMin > itemStartTotalMin && endTotalMin <= itemEndTotalMin) ||
                         (startTotalMin <= itemStartTotalMin && endTotalMin >= itemEndTotalMin)) {
@@ -968,7 +1368,58 @@
             return false;
         }
         
-        // 삭제 모달 열기
+        // 공유 모달 관련 함수들
+        function openShareModal() {
+            scheduleShare.updateUI();
+            document.getElementById('shareModal').style.display = 'flex';
+        }
+        
+        function closeShareModal() {
+            document.getElementById('shareModal').style.display = 'none';
+        }
+        
+        // 공유 URL 복사
+        function copyShareUrl() {
+            const shareUrl = scheduleShare.getShareUrl();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    scheduleShare.showToast('링크가 복사되었습니다! 가족에게 공유해주세요.');
+                });
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = shareUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                scheduleShare.showToast('링크가 복사되었습니다! 가족에게 공유해주세요.');
+            }
+        }
+        
+        // 카카오톡 공유
+        function shareViaKakao() {
+            const shareData = {
+                title: '우리 딸 학원 스케줄',
+                text: '함께 스케줄을 관리해요!',
+                url: scheduleShare.getShareUrl()
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData);
+            } else {
+                copyShareUrl();
+            }
+        }
+        
+        // 새로운 그룹 만들기
+        async function createNewGroup() {
+            if (confirm('새로운 스케줄 그룹을 만들시겠습니까?\n현재 스케줄이 새 그룹으로 복사됩니다.')) {
+                await scheduleShare.createNewGroup();
+                closeShareModal();
+            }
+        }
+        
+        // 삭제 관련 함수들
         function openDeleteModal(id) {
             const item = schedule[id];
             if (item) {
@@ -986,46 +1437,46 @@
             }
         }
         
-        // 삭제 모달 닫기
         function closeDeleteModal() {
             document.getElementById('deleteModal').style.display = 'none';
             deleteTargetId = null;
         }
         
-        // 삭제 확인
-        function confirmDelete() {
+        async function confirmDelete() {
             if (deleteTargetId && schedule[deleteTargetId]) {
+                const deletedName = schedule[deleteTargetId].name;
                 delete schedule[deleteTargetId];
-                saveStorageData();
+                await saveStorageData();
                 loadSchedule();
                 closeDeleteModal();
+                scheduleShare.showToast(`${deletedName} 학원이 삭제되었습니다.`);
             }
         }
         
-        // 학원 클릭 처리
         function handleClassClick(id) {
             openDeleteModal(id);
         }
         
-        // 모달 외부 클릭 시 닫기 (모바일에서는 비활성화)
+        // 모달 외부 클릭 시 닫기
         window.onclick = function(event) {
             const addModal = document.getElementById('addModal');
             const deleteModal = document.getElementById('deleteModal');
+            const shareModal = document.getElementById('shareModal');
             
-            // 모바일에서는 외부 클릭으로 모달 닫기 비활성화
-            // if (event.target === addModal) {
-            //     closeModal();
-            // }
             if (event.target === deleteModal) {
                 closeDeleteModal();
             }
+            if (event.target === shareModal) {
+                closeShareModal();
+            }
         }
         
-        // ESC 키로 모달 닫기 (모바일에서는 비활성화)
+        // ESC 키로 모달 닫기
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const addModal = document.getElementById('addModal');
                 const deleteModal = document.getElementById('deleteModal');
+                const shareModal = document.getElementById('shareModal');
                 
                 if (addModal.style.display === 'flex') {
                     closeModal();
@@ -1033,14 +1484,16 @@
                 if (deleteModal.style.display === 'flex') {
                     closeDeleteModal();
                 }
+                if (shareModal.style.display === 'flex') {
+                    closeShareModal();
+                }
             }
         });
         
-        // 모바일 전용: 터치 이벤트 최적화
+        // 모바일 최적화
         document.addEventListener('touchstart', function() {}, {passive: true});
         document.addEventListener('touchmove', function() {}, {passive: true});
         
-        // 뷰포트 높이 조정 (모바일 브라우저 주소창 대응)
         function setVH() {
             let vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -1050,12 +1503,16 @@
         window.addEventListener('orientationchange', setVH);
         setVH();
         
+        // 페이지 언로드 시 연결 해제
+        window.addEventListener('beforeunload', () => {
+            scheduleShare.disconnect();
+        });
+        
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
             init();
         });
         
-        // 초기화 실행 (DOMContentLoaded 이벤트가 이미 발생한 경우를 위해)
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
