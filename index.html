@@ -1,0 +1,1018 @@
+        .delete-mode-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .delete-mode-btn.active {
+            background: #ff4757;
+        }<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 딸 학원 스케줄</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .delete-mode-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .delete-mode-btn.active {
+            background: #ff4757;
+        }
+        
+        .schedule-wrapper {
+            overflow-x: auto;
+            margin: -10px;
+            padding: 10px;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .schedule-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            min-width: 100px;
+        }
+        
+        .schedule-table td {
+            padding: 2px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            position: relative;
+            height: 80px;
+            vertical-align: top;
+        }
+        
+        .time-header {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            width: 100px;
+            min-width: 100px;
+            padding: 15px 8px;
+        }
+        
+        .schedule-cell {
+            position: relative;
+        }
+        
+        .class-item {
+            background: #4ecdc4;
+            color: white;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: absolute;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            left: 2px;
+            right: 2px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .class-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+        }
+        
+        .class-name {
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+        
+        .class-time {
+            font-size: 10px;
+            opacity: 0.9;
+            margin-top: 2px;
+            line-height: 1.1;
+        }
+        
+        /* 삭제 확인 모달 스타일 */
+        .delete-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .delete-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            text-align: center;
+        }
+        
+        .delete-modal h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.2em;
+        }
+        
+        .delete-modal p {
+            margin-bottom: 25px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .delete-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .delete-confirm-btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .delete-confirm-btn:hover {
+            background: #ff5252;
+        }
+        
+        .delete-cancel-btn {
+            background: #e9ecef;
+            color: #495057;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .delete-cancel-btn:hover {
+            background: #dee2e6;
+        }
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border: 3px solid transparent;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.selected {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            justify-content: flex-end;
+        }
+        
+        .save-btn {
+            background: #667eea;
+            color: white;
+        }
+        
+        .cancel-btn {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .empty-cell {
+            color: #adb5bd;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 12px;
+        }
+        
+        .day-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .day-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .day-checkbox input[type="checkbox"] {
+            display: none;
+        }
+        
+        .day-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+        
+        .day-checkbox input[type="checkbox"]:checked + .day-label {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+        
+        .day-label:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .schedule-table {
+                font-size: 12px;
+            }
+            
+            .time-header {
+                width: 70px;
+                min-width: 70px;
+                font-size: 11px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .day-selector {
+                gap: 5px;
+            }
+            
+            .day-label {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎒 우리 딸 학원 스케줄 📚</h1>
+        
+        <div class="controls">
+            <button class="add-btn" onclick="openModal()">➕ 학원 추가</button>
+        </div>
+        
+        <div class="schedule-wrapper">
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th class="time-header">시간</th>
+                        <th>월요일</th>
+                        <th>화요일</th>
+                        <th>수요일</th>
+                        <th>목요일</th>
+                        <th>금요일</th>
+                        <th>토요일</th>
+                        <th>일요일</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <!-- 시간대별 행이 동적으로 생성됩니다 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 삭제 확인 모달 -->
+    <div class="delete-modal" id="deleteModal">
+        <div class="delete-modal-content">
+            <h3>🗑️ 학원 삭제</h3>
+            <p id="deleteMessage">정말 삭제하시겠습니까?</p>
+            <div class="delete-modal-buttons">
+                <button class="delete-cancel-btn" onclick="closeDeleteModal()">취소</button>
+                <button class="delete-confirm-btn" onclick="confirmDelete()">삭제</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <h2>학원 추가하기</h2>
+            <div class="form-group">
+                <label>학원 이름</label>
+                <input type="text" id="className" placeholder="예: 영어학원" maxlength="20">
+                <div class="error-message" id="nameError">학원 이름을 입력해주세요.</div>
+            </div>
+            <div class="form-group">
+                <label>요일 선택 (여러 요일 선택 가능)</label>
+                <div class="day-selector">
+                    <label class="day-checkbox">
+                        <input type="checkbox" value="1" class="day-check">
+                        <span class="day-label">월</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" value="2" class="day-check">
+                        <span class="day-label">화</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" value="3" class="day-check">
+                        <span class="day-label">수</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" value="4" class="day-check">
+                        <span class="day-label">목</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" value="5" class="day-check">
+                        <span class="day-label">금</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" value="6" class="day-check">
+                        <span class="day-label">토</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" value="7" class="day-check">
+                        <span class="day-label">일</span>
+                    </label>
+                </div>
+                <div class="error-message" id="dayError">요일을 선택해주세요.</div>
+            </div>
+            <div class="form-group">
+                <label>시작 시간</label>
+                <input type="time" id="startTime" min="08:00" max="22:00" step="900">
+                <div class="error-message" id="startTimeError">시작 시간을 선택해주세요.</div>
+            </div>
+            <div class="form-group">
+                <label>종료 시간</label>
+                <input type="time" id="endTime" min="08:00" max="22:00" step="900">
+                <div class="error-message" id="endTimeError">종료 시간을 선택해주세요.</div>
+            </div>
+            <div class="form-group">
+                <label>색상 선택</label>
+                <div class="color-options">
+                    <div class="color-option selected" style="background: #4ecdc4" data-color="#4ecdc4"></div>
+                    <div class="color-option" style="background: #ff6b6b" data-color="#ff6b6b"></div>
+                    <div class="color-option" style="background: #45b7d1" data-color="#45b7d1"></div>
+                    <div class="color-option" style="background: #96ceb4" data-color="#96ceb4"></div>
+                    <div class="color-option" style="background: #feca57" data-color="#feca57"></div>
+                    <div class="color-option" style="background: #a29bfe" data-color="#a29bfe"></div>
+                    <div class="color-option" style="background: #fd79a8" data-color="#fd79a8"></div>
+                    <div class="color-option" style="background: #6c5ce7" data-color="#6c5ce7"></div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal()">취소</button>
+                <button class="save-btn" onclick="saveClass()">저장</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let schedule = {};
+        let selectedColor = '#4ecdc4';
+        let deleteTargetId = null;
+        
+        // 안전한 로컬스토리지 로드
+        function loadStorageData() {
+            try {
+                const data = localStorage.getItem('academySchedule');
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    if (typeof parsed === 'object' && parsed !== null) {
+                        return parsed;
+                    }
+                }
+            } catch (error) {
+                console.warn('로컬스토리지 데이터 로드 실패:', error);
+            }
+            return {};
+        }
+        
+        // 안전한 로컬스토리지 저장
+        function saveStorageData() {
+            try {
+                localStorage.setItem('academySchedule', JSON.stringify(schedule));
+            } catch (error) {
+                console.error('로컬스토리지 저장 실패:', error);
+                alert('데이터 저장에 실패했습니다. 브라우저 저장공간을 확인해주세요.');
+            }
+        }
+        
+        // 시간대 생성 (오전 8시부터 오후 10시까지, 15분 단위)
+        const timeSlots = [];
+        for (let hour = 8; hour <= 22; hour++) {
+            const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+            const period = hour >= 12 ? 'PM' : 'AM';
+            const formattedTime = `${period} ${displayHour}:00`;
+            timeSlots.push({
+                display: formattedTime,
+                value: `${hour.toString().padStart(2, '0')}:00`,
+                hour: hour
+            });
+        }
+        
+        // 초기화
+        function init() {
+            schedule = loadStorageData();
+            generateScheduleTable();
+            loadSchedule();
+            setupEventListeners();
+            
+            // 기본값 설정
+            document.getElementById('startTime').value = '09:00';
+            document.getElementById('endTime').value = '10:00';
+        }
+        
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            // 색상 선택 이벤트
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedColor = this.dataset.color;
+                });
+            });
+            
+            // 시간 입력 검증
+            document.getElementById('startTime').addEventListener('change', validateTimes);
+            document.getElementById('endTime').addEventListener('change', validateTimes);
+            
+            // 학원 이름 입력 검증
+            document.getElementById('className').addEventListener('input', function() {
+                clearError('nameError');
+            });
+            
+            // 요일 선택 검증
+            document.querySelectorAll('.day-check').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    clearError('dayError');
+                });
+            });
+        }
+        
+        // 시간 검증
+        function validateTimes() {
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            clearError('startTimeError');
+            clearError('endTimeError');
+            
+            if (startTime && endTime && startTime >= endTime) {
+                showError('endTimeError', '종료 시간은 시작 시간보다 늦어야 합니다.');
+            }
+        }
+        
+        // 에러 표시
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+        
+        // 에러 숨기기
+        function clearError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.classList.remove('show');
+        }
+        
+        // 모든 에러 숨기기
+        function clearAllErrors() {
+            document.querySelectorAll('.error-message').forEach(element => {
+                element.classList.remove('show');
+            });
+        }
+        
+        // 스케줄 테이블 생성
+        function generateScheduleTable() {
+            const tbody = document.getElementById('scheduleBody');
+            tbody.innerHTML = '';
+            
+            timeSlots.forEach(time => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td class="time-header">${time.display}</td>`;
+                
+                for (let day = 1; day <= 7; day++) {
+                    row.innerHTML += `<td id="cell-${day}-${time.hour}" class="schedule-cell"></td>`;
+                }
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // 스케줄 로드
+        function loadSchedule() {
+            // 모든 셀 초기화
+            document.querySelectorAll('.schedule-cell').forEach(cell => {
+                cell.innerHTML = '';
+            });
+            
+            // 저장된 스케줄 표시
+            for (const key in schedule) {
+                const item = schedule[key];
+                if (!item || !item.startTime || !item.endTime || !item.day) {
+                    continue; // 잘못된 데이터 스킵
+                }
+                
+                displayScheduleItem(key, item);
+            }
+            
+            // 빈 셀 표시
+            document.querySelectorAll('.schedule-cell').forEach(cell => {
+                if (cell.innerHTML === '') {
+                    cell.innerHTML = '<div class="empty-cell">-</div>';
+                }
+            });
+        }
+        
+        // 개별 스케줄 아이템 표시
+        function displayScheduleItem(key, item) {
+            const [startHour, startMin] = item.startTime.split(':').map(Number);
+            const [endHour, endMin] = item.endTime.split(':').map(Number);
+            
+            // 시작 시간이 유효한 범위인지 확인
+            if (startHour < 8 || startHour > 22) return;
+            
+            // 시작 시간의 셀 찾기
+            const startCellId = `cell-${item.day}-${startHour}`;
+            const startCell = document.getElementById(startCellId);
+            
+            if (startCell) {
+                const classDiv = document.createElement('div');
+                classDiv.className = 'class-item';
+                classDiv.style.background = item.color || '#4ecdc4';
+                
+                // 시작 위치 계산 (분 단위로 정확한 위치)
+                const topOffset = (startMin / 60) * 100;
+                classDiv.style.top = `${topOffset}%`;
+                
+                // 전체 시간을 분으로 계산
+                const startTotalMin = startHour * 60 + startMin;
+                const endTotalMin = endHour * 60 + endMin;
+                const durationMin = endTotalMin - startTotalMin;
+                
+                // 높이 계산 (각 셀은 80px 높이, 1시간 = 80px)
+                const heightPx = (durationMin / 60) * 80;
+                classDiv.style.height = `${Math.max(heightPx, 30)}px`; // 최소 높이 30px
+                
+                // 콘텐츠 설정
+                const startTimeDisplay = formatTimeForDisplay(item.startTime);
+                const endTimeDisplay = formatTimeForDisplay(item.endTime);
+                
+                classDiv.innerHTML = `
+                    <div class="class-name">${item.name}</div>
+                    <div class="class-time">${startTimeDisplay} - ${endTimeDisplay}</div>
+                `;
+                
+                classDiv.dataset.id = key;
+                classDiv.onclick = () => handleClassClick(key);
+                startCell.appendChild(classDiv);
+            }
+        }
+        
+        // 표시용 시간 포맷 변환
+        function formatTimeForDisplay(time) {
+            const [hour, min] = time.split(':').map(Number);
+            const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+            const period = hour >= 12 ? 'PM' : 'AM';
+            const minStr = min > 0 ? `:${min.toString().padStart(2, '0')}` : '';
+            return `${period} ${displayHour}${minStr}`;
+        }
+        
+        // 모달 열기
+        function openModal() {
+            clearAllErrors();
+            document.getElementById('addModal').style.display = 'flex';
+            document.getElementById('className').focus();
+        }
+        
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('className').value = '';
+            document.querySelectorAll('.day-check').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('startTime').value = '09:00';
+            document.getElementById('endTime').value = '10:00';
+            clearAllErrors();
+        }
+        
+        // 입력 검증
+        function validateInput() {
+            let isValid = true;
+            clearAllErrors();
+            
+            const name = document.getElementById('className').value.trim();
+            const selectedDays = Array.from(document.querySelectorAll('.day-check:checked')).map(cb => cb.value);
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            if (!name) {
+                showError('nameError', '학원 이름을 입력해주세요.');
+                isValid = false;
+            }
+            
+            if (selectedDays.length === 0) {
+                showError('dayError', '요일을 선택해주세요.');
+                isValid = false;
+            }
+            
+            if (!startTime) {
+                showError('startTimeError', '시작 시간을 선택해주세요.');
+                isValid = false;
+            }
+            
+            if (!endTime) {
+                showError('endTimeError', '종료 시간을 선택해주세요.');
+                isValid = false;
+            }
+            
+            if (startTime && endTime && startTime >= endTime) {
+                showError('endTimeError', '종료 시간은 시작 시간보다 늦어야 합니다.');
+                isValid = false;
+            }
+            
+            // 시간 범위 체크
+            if (startTime) {
+                const [hour] = startTime.split(':').map(Number);
+                if (hour < 8 || hour > 22) {
+                    showError('startTimeError', '시작 시간은 오전 8시부터 오후 10시 사이여야 합니다.');
+                    isValid = false;
+                }
+            }
+            
+            if (endTime) {
+                const [hour] = endTime.split(':').map(Number);
+                if (hour < 8 || hour > 23) {
+                    showError('endTimeError', '종료 시간은 오전 8시부터 오후 11시 사이여야 합니다.');
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // 학원 저장
+        function saveClass() {
+            if (!validateInput()) {
+                return;
+            }
+            
+            const name = document.getElementById('className').value.trim();
+            const selectedDays = Array.from(document.querySelectorAll('.day-check:checked')).map(cb => cb.value);
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            // 선택된 각 요일에 대해 중복 체크
+            const dayNames = ['', '월', '화', '수', '목', '금', '토', '일'];
+            for (const day of selectedDays) {
+                if (checkOverlap(day, startTime, endTime)) {
+                    const overlapInfo = getOverlapInfo(day, startTime, endTime);
+                    showError('dayError', `${dayNames[day]}요일 ${formatTimeForDisplay(startTime)}-${formatTimeForDisplay(endTime)} 시간대에 이미 "${overlapInfo}"이(가) 있습니다.`);
+                    return;
+                }
+            }
+            
+            // 각 요일에 대해 학원 추가
+            selectedDays.forEach(day => {
+                const id = Date.now().toString() + '-' + day + '-' + Math.random().toString(36).substr(2, 9);
+                schedule[id] = {
+                    name,
+                    day,
+                    startTime,
+                    endTime,
+                    color: selectedColor
+                };
+            });
+            
+            saveStorageData();
+            loadSchedule();
+            closeModal();
+        }
+        
+        // 중복되는 학원 정보 가져오기
+        function getOverlapInfo(day, startTime, endTime) {
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const [endHour, endMin] = endTime.split(':').map(Number);
+            const startTotalMin = startHour * 60 + startMin;
+            const endTotalMin = endHour * 60 + endMin;
+            
+            for (const key in schedule) {
+                const item = schedule[key];
+                if (item.day === day) {
+                    const [itemStartHour, itemStartMin] = item.startTime.split(':').map(Number);
+                    const [itemEndHour, itemEndMin] = item.endTime.split(':').map(Number);
+                    const itemStartTotalMin = itemStartHour * 60 + itemStartMin;
+                    const itemEndTotalMin = itemEndHour * 60 + itemEndMin;
+                    
+                    if ((startTotalMin >= itemStartTotalMin && startTotalMin < itemEndTotalMin) ||
+                        (endTotalMin > itemStartTotalMin && endTotalMin <= itemEndTotalMin) ||
+                        (startTotalMin <= itemStartTotalMin && endTotalMin >= itemEndTotalMin)) {
+                        return item.name;
+                    }
+                }
+            }
+            return '';
+        }
+        
+        // 시간 중복 체크 (개선된 버전)
+        function checkOverlap(day, startTime, endTime) {
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const [endHour, endMin] = endTime.split(':').map(Number);
+            const startTotalMin = startHour * 60 + startMin;
+            const endTotalMin = endHour * 60 + endMin;
+            
+            for (const key in schedule) {
+                const item = schedule[key];
+                if (item.day === day) {
+                    const [itemStartHour, itemStartMin] = item.startTime.split(':').map(Number);
+                    const [itemEndHour, itemEndMin] = item.endTime.split(':').map(Number);
+                    const itemStartTotalMin = itemStartHour * 60 + itemStartMin;
+                    const itemEndTotalMin = itemEndHour * 60 + itemEndMin;
+                    
+                    // 겹치는 경우:
+                    // 1. 새 수업 시작시간이 기존 수업 시간 안에 있음
+                    // 2. 새 수업 종료시간이 기존 수업 시간 안에 있음  
+                    // 3. 새 수업이 기존 수업을 완전히 포함함
+                    if ((startTotalMin >= itemStartTotalMin && startTotalMin < itemEndTotalMin) ||
+                        (endTotalMin > itemStartTotalMin && endTotalMin <= itemEndTotalMin) ||
+                        (startTotalMin <= itemStartTotalMin && endTotalMin >= itemEndTotalMin)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        // 삭제 모달 열기
+        function openDeleteModal(id) {
+            const item = schedule[id];
+            if (item) {
+                deleteTargetId = id;
+                const startTime = formatTimeForDisplay(item.startTime);
+                const endTime = formatTimeForDisplay(item.endTime);
+                const dayNames = ['', '월', '화', '수', '목', '금', '토', '일'];
+                
+                document.getElementById('deleteMessage').innerHTML = 
+                    `<strong>"${item.name}"</strong><br>
+                     ${dayNames[item.day]}요일 ${startTime} - ${endTime}<br><br>
+                     정말 삭제하시겠습니까?`;
+                
+                document.getElementById('deleteModal').style.display = 'flex';
+            }
+        }
+        
+        // 삭제 모달 닫기
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            deleteTargetId = null;
+        }
+        
+        // 삭제 확인
+        function confirmDelete() {
+            if (deleteTargetId && schedule[deleteTargetId]) {
+                delete schedule[deleteTargetId];
+                saveStorageData();
+                loadSchedule();
+                closeDeleteModal();
+            }
+        }
+        
+        // 학원 클릭 처리
+        function handleClassClick(id) {
+            openDeleteModal(id);
+        }
+        
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const addModal = document.getElementById('addModal');
+            const deleteModal = document.getElementById('deleteModal');
+            
+            if (event.target === addModal) {
+                closeModal();
+            }
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
+        }
+        
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const addModal = document.getElementById('addModal');
+                const deleteModal = document.getElementById('deleteModal');
+                
+                if (addModal.style.display === 'flex') {
+                    closeModal();
+                }
+                if (deleteModal.style.display === 'flex') {
+                    closeDeleteModal();
+                }
+            }
+        });
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
+        
+        // 초기화 실행 (DOMContentLoaded 이벤트가 이미 발생한 경우를 위해)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
