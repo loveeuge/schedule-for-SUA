@@ -946,7 +946,7 @@
             </div>
             <div class="form-group">
                 <label>종료 시간</label>
-                <input type="time" id="endTime" min="08:00" max="22:00" step="900">
+                <input type="time" id="endTime" min="08:00" max="23:00" step="900">
                 <div class="error-message" id="endTimeError">종료 시간을 선택해주세요.</div>
             </div>
             <div class="form-group">
@@ -1046,6 +1046,7 @@
         let isPrintLayout = false;
         let hasInitialized = false;
         let initPromise = null;
+        let printRecoveryTimer = null;
 
         const LEGACY_STORAGE_KEY = 'academySchedule';
         const STORAGE_KEY_PREFIX = 'academySchedule:';
@@ -1494,6 +1495,40 @@
             });
         }
 
+        function getLastSaveResult() {
+            const syncStatusElement = document.getElementById('syncStatus');
+            const syncFailed = Boolean(
+                window.isFirebaseConnected &&
+                syncStatusElement &&
+                syncStatusElement.classList.contains('error')
+            );
+
+            return {
+                savedLocally: true,
+                synced: Boolean(window.isFirebaseConnected) && !syncFailed,
+                isOffline: !window.isFirebaseConnected
+            };
+        }
+
+        function showSaveResultToast(result, successMessage, localOnlyMessage, syncFailedMessage) {
+            if (!result.savedLocally) {
+                firebaseSync.showToast('저장에 실패했습니다. 다시 시도해주세요.');
+                return;
+            }
+
+            if (result.synced) {
+                firebaseSync.showToast(successMessage);
+                return;
+            }
+
+            if (result.isOffline) {
+                firebaseSync.showToast(localOnlyMessage);
+                return;
+            }
+
+            firebaseSync.showToast(syncFailedMessage);
+        }
+
         function escapeHtml(value) {
             return String(value)
                 .replace(/&/g, '&amp;')
@@ -1809,9 +1844,15 @@
             });
 
             await saveStorageData();
+            const saveResult = getLastSaveResult();
             loadSchedule();
             closeModal();
-            firebaseSync.showToast(`${name} 학원이 ${isEditing ? '수정' : '추가'}되었습니다!`);
+            showSaveResultToast(
+                saveResult,
+                `${name} 학원이 ${isEditing ? '수정' : '추가'}되었습니다!`,
+                `${name} 학원이 이 기기에만 저장되었습니다.`,
+                `${name} 학원은 저장됐지만 공유 동기화에 실패했습니다.`
+            );
         }
 
         // 중복 체크 함수들
@@ -1949,9 +1990,15 @@
                 const deletedName = schedule[deleteTargetId].name;
                 delete schedule[deleteTargetId];
                 await saveStorageData();
+                const saveResult = getLastSaveResult();
                 loadSchedule();
                 closeDeleteModal();
-                firebaseSync.showToast(`${deletedName} 학원이 삭제되었습니다.`);
+                showSaveResultToast(
+                    saveResult,
+                    `${deletedName} 학원이 삭제되었습니다.`,
+                    `${deletedName} 학원 삭제가 이 기기에만 반영되었습니다.`,
+                    `${deletedName} 학원 삭제는 저장됐지만 공유 동기화에 실패했습니다.`
+                );
             }
         }
 
@@ -1969,6 +2016,30 @@
             }
         }
 
+        function clearPrintRecoveryTimer() {
+            if (printRecoveryTimer) {
+                clearTimeout(printRecoveryTimer);
+                printRecoveryTimer = null;
+            }
+        }
+
+        function restoreScreenLayoutAfterPrint() {
+            clearPrintRecoveryTimer();
+
+            if (isPrintLayout) {
+                setPrintLayout(false);
+            }
+        }
+
+        function schedulePrintLayoutRecovery(delay = 1200) {
+            clearPrintRecoveryTimer();
+            printRecoveryTimer = setTimeout(() => {
+                if (!window.matchMedia || !window.matchMedia('print').matches) {
+                    restoreScreenLayoutAfterPrint();
+                }
+            }, delay);
+        }
+
         function closeAllPopups() {
             closeModal();
             closeDeleteModal();
@@ -1978,9 +2049,11 @@
         function printSchedule() {
             closeAllPopups();
             setPrintLayout(true);
+            clearPrintRecoveryTimer();
 
             setTimeout(() => {
                 window.print();
+                schedulePrintLayoutRecovery();
             }, 80);
         }
 
@@ -2034,12 +2107,37 @@
         setVH();
 
         window.addEventListener('beforeprint', () => {
+            clearPrintRecoveryTimer();
             setPrintLayout(true);
         });
 
         window.addEventListener('afterprint', () => {
-            setPrintLayout(false);
+            restoreScreenLayoutAfterPrint();
         });
+
+        window.addEventListener('focus', () => {
+            if (isPrintLayout) {
+                schedulePrintLayoutRecovery(150);
+            }
+        });
+
+        if (window.matchMedia) {
+            const printMediaQuery = window.matchMedia('print');
+            const handlePrintMediaChange = (event) => {
+                if (event.matches) {
+                    clearPrintRecoveryTimer();
+                    setPrintLayout(true);
+                } else {
+                    restoreScreenLayoutAfterPrint();
+                }
+            };
+
+            if (printMediaQuery.addEventListener) {
+                printMediaQuery.addEventListener('change', handlePrintMediaChange);
+            } else if (printMediaQuery.addListener) {
+                printMediaQuery.addListener(handlePrintMediaChange);
+            }
+        }
 
         // 페이지 언로드 시 연결 해제
         window.addEventListener('beforeunload', () => {
