@@ -247,6 +247,32 @@
             text-overflow: clip;
         }
 
+        .class-comment {
+            display: none;
+            width: 100%;
+            font-size: var(--class-comment-size, 6px);
+            line-height: var(--class-comment-line-height, 1.1);
+            margin-top: var(--class-comment-gap, 1px);
+            opacity: 0.95;
+            text-align: center;
+            white-space: normal;
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: var(--class-comment-lines, 2);
+            max-height: calc(var(--class-comment-size, 6px) * var(--class-comment-line-height, 1.1) * var(--class-comment-lines, 2));
+        }
+
+        body.printing .class-item {
+            justify-content: flex-start;
+            padding-top: max(var(--class-padding, 3px), 2px);
+        }
+
+        body.printing .class-comment {
+            display: -webkit-box;
+        }
+
         .empty-cell {
             color: #adb5bd;
             font-style: italic;
@@ -812,6 +838,11 @@
                 right: 0;
                 border-radius: 3px;
                 box-shadow: none;
+                justify-content: flex-start;
+            }
+
+            .class-comment {
+                display: -webkit-box;
             }
 
             .empty-cell {
@@ -1609,10 +1640,14 @@
                 applyClassItemSizing(classDiv, displayHeightPx, durationMin);
                 const timeRangeMarkup = buildTimeRangeMarkup(item.startTime, item.endTime);
                 const safeName = escapeHtml(item.name);
+                const commentMarkup = item.comment
+                    ? `<div class="class-comment">${escapeHtml(item.comment)}</div>`
+                    : '';
 
                 classDiv.innerHTML = `
                     <div class="class-name">${safeName}</div>
                     <div class="class-time">${timeRangeMarkup}</div>
+                    ${commentMarkup}
                 `;
 
                 classDiv.dataset.id = key;
@@ -1627,35 +1662,60 @@
         function applyClassItemSizing(element, displayHeightPx, durationMin) {
             let nameSize = 10.5;
             let timeSize = 7.2;
+            let commentSize = 5.8;
             let padding = 3;
             let nameGap = 0.5;
             let nameLines = 2;
             let nameLineHeight = 1;
             let timeLineHeight = 0.98;
             let timeGap = 0;
+            let commentGap = 1;
+            let commentLineHeight = 1.05;
+            let commentLines = 2;
 
             if (displayHeightPx <= 40 || durationMin <= 30) {
                 nameSize = 6.6;
                 timeSize = 4.8;
+                commentSize = 4;
                 padding = 1;
                 nameGap = 0;
                 nameLineHeight = 0.96;
                 timeLineHeight = 0.94;
+                commentGap = 0.5;
+                commentLineHeight = 0.98;
+                commentLines = 1;
             } else if (displayHeightPx <= 48) {
                 nameSize = 7.4;
                 timeSize = 5.4;
+                commentSize = 4.5;
                 padding = 1.5;
                 nameGap = 0;
                 nameLineHeight = 0.98;
                 timeLineHeight = 0.95;
+                commentGap = 0.5;
+                commentLineHeight = 0.98;
+                commentLines = 1;
             } else if (displayHeightPx <= 58) {
                 nameSize = 8.6;
                 timeSize = 6.1;
+                commentSize = 5;
                 padding = 2;
                 nameGap = 0;
                 nameLineHeight = 0.99;
                 timeLineHeight = 0.96;
                 timeGap = 0.5;
+                commentGap = 0.75;
+                commentLineHeight = 1;
+                commentLines = 2;
+            }
+
+            if (isPrintLayout) {
+                nameSize += 0.2;
+                commentSize = Math.max(commentSize, timeSize - 1.1);
+                commentGap = Math.max(commentGap, 0.75);
+                if (durationMin >= 60) {
+                    commentLines = Math.max(commentLines, 3);
+                }
             }
 
             element.style.setProperty('--class-base-size', `${timeSize}px`);
@@ -1667,6 +1727,10 @@
             element.style.setProperty('--class-name-line-height', `${nameLineHeight}`);
             element.style.setProperty('--class-time-line-height', `${timeLineHeight}`);
             element.style.setProperty('--class-time-gap', `${timeGap}px`);
+            element.style.setProperty('--class-comment-size', `${commentSize}px`);
+            element.style.setProperty('--class-comment-gap', `${commentGap}px`);
+            element.style.setProperty('--class-comment-line-height', `${commentLineHeight}`);
+            element.style.setProperty('--class-comment-lines', `${commentLines}`);
         }
 
         function buildTimeRangeMarkup(startTime, endTime) {
