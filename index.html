@@ -11,7 +11,7 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -19,7 +19,7 @@
             padding: 10px;
             touch-action: manipulation;
         }
-        
+
         .container {
             max-width: 100%;
             margin: 0 auto;
@@ -29,7 +29,7 @@
             padding: 15px;
             backdrop-filter: blur(10px);
         }
-        
+
         h1 {
             text-align: center;
             color: #333;
@@ -37,7 +37,7 @@
             font-size: 1.6em;
             font-weight: 700;
         }
-        
+
         .share-status {
             text-align: center;
             margin-bottom: 15px;
@@ -48,35 +48,35 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .share-status:active {
             transform: scale(0.98);
             background: rgba(102, 126, 234, 0.15);
         }
-        
+
         .share-id {
             color: #667eea;
             font-weight: 600;
             margin-bottom: 2px;
         }
-        
+
         .sync-status {
             color: #28a745;
             font-size: 11px;
         }
-        
+
         .sync-status.error {
             color: #dc3545;
         }
-        
+
         .sync-status.connecting {
             color: #ffc107;
         }
-        
+
         .controls {
             margin-bottom: 20px;
         }
-        
+
         .add-btn {
             width: 100%;
             padding: 14px;
@@ -91,19 +91,19 @@
             transition: all 0.3s ease;
             touch-action: manipulation;
         }
-        
+
         .add-btn:active {
             transform: scale(0.98);
             box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
         }
-        
+
         .schedule-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             margin: -5px;
             padding: 5px;
         }
-        
+
         .schedule-table {
             width: 100%;
             min-width: 100%;
@@ -114,7 +114,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             font-size: 12px;
         }
-        
+
         .schedule-table th {
             background: #f8f9fa;
             padding: 8px 4px;
@@ -124,7 +124,7 @@
             font-size: 11px;
             min-width: 0;
         }
-        
+
         .schedule-table td {
             padding: 1px;
             text-align: center;
@@ -134,7 +134,7 @@
             vertical-align: top;
             min-width: 0;
         }
-        
+
         .time-header {
             background: #f8f9fa;
             font-weight: 600;
@@ -145,12 +145,12 @@
             font-size: 10px;
             line-height: 1.2;
         }
-        
+
         .schedule-cell {
             position: relative;
             width: calc((100% - 50px) / 7);
         }
-        
+
         .class-item {
             background: #4ecdc4;
             color: white;
@@ -172,24 +172,24 @@
             touch-action: manipulation;
             line-height: 1.1;
         }
-        
+
         .class-item:active {
             transform: scale(0.95);
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             z-index: 20;
         }
-        
+
         .class-name {
             font-weight: 600;
             font-size: 10px;
             margin-bottom: 1px;
         }
-        
+
         .class-time {
             font-size: 8px;
             opacity: 0.9;
         }
-        
+
         .empty-cell {
             color: #adb5bd;
             font-style: italic;
@@ -199,7 +199,7 @@
             height: 100%;
             font-size: 10px;
         }
-        
+
         /* 모달 스타일 */
         .modal {
             display: none;
@@ -214,7 +214,7 @@
             z-index: 1000;
             padding: 0;
         }
-        
+
         .modal-content {
             background: white;
             border-radius: 16px 16px 0 0;
@@ -225,7 +225,7 @@
             padding: 20px;
             padding-bottom: calc(20px + env(safe-area-inset-bottom));
         }
-        
+
         @keyframes slideUp {
             from {
                 transform: translateY(100%);
@@ -236,18 +236,18 @@
                 opacity: 1;
             }
         }
-        
+
         .modal h2 {
             margin-bottom: 20px;
             color: #333;
             font-size: 1.4em;
             text-align: center;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
@@ -255,7 +255,7 @@
             color: #495057;
             font-size: 14px;
         }
-        
+
         .form-group input {
             width: 100%;
             padding: 14px;
@@ -265,30 +265,30 @@
             transition: border-color 0.3s ease;
             background-color: white;
         }
-        
+
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
         }
-        
+
         .day-selector {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 8px;
             margin-top: 10px;
         }
-        
+
         .day-checkbox {
             display: flex;
             align-items: center;
             cursor: pointer;
             user-select: none;
         }
-        
+
         .day-checkbox input[type="checkbox"] {
             display: none;
         }
-        
+
         .day-label {
             display: flex;
             align-items: center;
@@ -302,24 +302,24 @@
             transition: all 0.3s ease;
             font-size: 14px;
         }
-        
+
         .day-checkbox input[type="checkbox"]:checked + .day-label {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border-color: #667eea;
         }
-        
+
         .day-label:active {
             transform: scale(0.95);
         }
-        
+
         .color-options {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
             margin-top: 10px;
         }
-        
+
         .color-option {
             width: 100%;
             height: 44px;
@@ -329,15 +329,15 @@
             border: 3px solid transparent;
             position: relative;
         }
-        
+
         .color-option:active {
             transform: scale(0.9);
         }
-        
+
         .color-option.selected {
             border-color: #333;
         }
-        
+
         .color-option.selected::after {
             content: '✓';
             position: absolute;
@@ -349,13 +349,13 @@
             font-size: 16px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
-        
+
         .modal-buttons {
             display: flex;
             gap: 10px;
             margin-top: 30px;
         }
-        
+
         .modal-buttons button {
             flex: 1;
             padding: 16px;
@@ -367,38 +367,38 @@
             transition: all 0.3s ease;
             touch-action: manipulation;
         }
-        
+
         .save-btn {
             background: #667eea;
             color: white;
         }
-        
+
         .save-btn:active {
             background: #5a6fd8;
             transform: scale(0.98);
         }
-        
+
         .cancel-btn {
             background: #e9ecef;
             color: #495057;
         }
-        
+
         .cancel-btn:active {
             background: #dee2e6;
             transform: scale(0.98);
         }
-        
+
         .error-message {
             color: #dc3545;
             font-size: 12px;
             margin-top: 5px;
             display: none;
         }
-        
+
         .error-message.show {
             display: block;
         }
-        
+
         /* 삭제 모달 스타일 */
         .delete-modal {
             display: none;
@@ -413,7 +413,7 @@
             z-index: 2000;
             padding: 20px;
         }
-        
+
         .delete-modal-content {
             background: white;
             padding: 25px;
@@ -423,7 +423,7 @@
             animation: slideIn 0.3s ease;
             text-align: center;
         }
-        
+
         @keyframes slideIn {
             from {
                 transform: scale(0.9);
@@ -434,27 +434,28 @@
                 opacity: 1;
             }
         }
-        
+
         .delete-modal h3 {
             margin-bottom: 15px;
             color: #333;
             font-size: 1.3em;
         }
-        
+
         .delete-modal p {
             margin-bottom: 25px;
             color: #666;
             line-height: 1.5;
             font-size: 14px;
         }
-        
+
         .delete-modal-buttons {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
-        
+
         .delete-modal-buttons button {
-            flex: 1;
+            flex: 1 1 30%;
             padding: 14px;
             border: none;
             border-radius: 8px;
@@ -464,27 +465,37 @@
             transition: all 0.3s ease;
             touch-action: manipulation;
         }
-        
+
         .delete-confirm-btn {
             background: #ff6b6b;
             color: white;
         }
-        
+
         .delete-confirm-btn:active {
             background: #ff5252;
             transform: scale(0.98);
         }
-        
+
         .delete-cancel-btn {
             background: #e9ecef;
             color: #495057;
         }
-        
+
         .delete-cancel-btn:active {
             background: #dee2e6;
             transform: scale(0.98);
         }
-        
+
+        .edit-btn {
+            background: #45b7d1;
+            color: white;
+        }
+
+        .edit-btn:active {
+            background: #379eb7;
+            transform: scale(0.98);
+        }
+
         /* 공유 모달 스타일 */
         .share-modal {
             display: none;
@@ -499,7 +510,7 @@
             z-index: 2000;
             padding: 20px;
         }
-        
+
         .share-modal-content {
             background: white;
             padding: 25px;
@@ -508,7 +519,7 @@
             max-width: 400px;
             animation: slideIn 0.3s ease;
         }
-        
+
         .share-url-display {
             background: #f8f9fa;
             padding: 15px;
@@ -520,14 +531,14 @@
             font-size: 13px;
             color: #495057;
         }
-        
+
         .share-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin: 15px 0;
         }
-        
+
         .share-btn {
             padding: 12px;
             border: none;
@@ -538,54 +549,54 @@
             transition: all 0.3s ease;
             touch-action: manipulation;
         }
-        
+
         .copy-btn {
             background: #28a745;
             color: white;
         }
-        
+
         .copy-btn:active {
             background: #218838;
             transform: scale(0.98);
         }
-        
+
         .kakao-btn {
             background: #fee500;
             color: #3c1e1e;
         }
-        
+
         .kakao-btn:active {
             background: #fdd835;
             transform: scale(0.98);
         }
-        
+
         .new-group-btn {
             background: #667eea;
             color: white;
             grid-column: 1 / -1;
         }
-        
+
         .new-group-btn:active {
             background: #5a6fd8;
             transform: scale(0.98);
         }
-        
+
         /* 드래그 방지 */
         img, .class-item, button {
             -webkit-user-drag: none;
             -webkit-touch-callout: none;
         }
-        
+
         /* 스크롤바 숨기기 */
         .schedule-wrapper::-webkit-scrollbar {
             display: none;
         }
-        
+
         .schedule-wrapper {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        
+
         /* 안전 영역 지원 */
         .container {
             padding-top: max(15px, env(safe-area-inset-top));
@@ -593,7 +604,7 @@
             padding-left: max(15px, env(safe-area-inset-left));
             padding-right: max(15px, env(safe-area-inset-right));
         }
-        
+
         /* 토스트 메시지 */
         .toast {
             position: fixed;
@@ -609,11 +620,11 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
+
         .toast.show {
             opacity: 1;
         }
-        
+
         /* 온라인 표시기 */
         .online-indicator {
             position: fixed;
@@ -626,23 +637,23 @@
             z-index: 1000;
             animation: pulse 2s infinite;
         }
-        
+
         .online-indicator.offline {
             background: #dc3545;
             animation: none;
         }
-        
+
         .online-indicator.connecting {
             background: #ffc107;
             animation: blink 1s infinite;
         }
-        
+
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.2); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
         }
-        
+
         @keyframes blink {
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0.3; }
@@ -652,16 +663,16 @@
 <body>
     <div class="container">
         <h1>🎒 수아 학원 스케줄러 📚</h1>
-        
+
         <div class="share-status" onclick="openShareModal()">
             <div class="share-id">스케줄 ID: <span id="currentScheduleId">연결중...</span></div>
             <div class="sync-status connecting" id="syncStatus">🔄 Firebase 연결중...</div>
         </div>
-        
+
         <div class="controls">
             <button class="add-btn" onclick="openModal()">➕ 학원 추가</button>
         </div>
-        
+
         <div class="schedule-wrapper">
             <table class="schedule-table">
                 <thead>
@@ -682,47 +693,48 @@
             </table>
         </div>
     </div>
-    
+
     <!-- 온라인 상태 표시기 -->
     <div class="online-indicator connecting" id="onlineIndicator"></div>
-    
+
     <!-- 공유 모달 -->
     <div class="share-modal" id="shareModal">
         <div class="share-modal-content">
             <h3>🔗 가족과 스케줄 공유</h3>
             <p>이 링크를 가족에게 보내면 함께 스케줄을 관리할 수 있어요!</p>
-            
+
             <div class="share-url-display" id="shareUrl">
                 링크 생성중...
             </div>
-            
+
             <div class="share-buttons">
                 <button class="share-btn copy-btn" onclick="copyShareUrl()">📋 링크 복사</button>
                 <button class="share-btn kakao-btn" onclick="shareViaKakao()">💬 카톡 공유</button>
                 <button class="share-btn new-group-btn" onclick="createNewGroup()">🆕 새로운 그룹 만들기</button>
             </div>
-            
+
             <div class="modal-buttons">
                 <button class="cancel-btn" onclick="closeShareModal()">닫기</button>
             </div>
         </div>
     </div>
-    
-    <!-- 삭제 확인 모달 -->
+
+    <!-- 일정 관리 모달 -->
     <div class="delete-modal" id="deleteModal">
         <div class="delete-modal-content">
-            <h3>🗑️ 학원 삭제</h3>
-            <p id="deleteMessage">정말 삭제하시겠습니까?</p>
+            <h3>학원 관리</h3>
+            <p id="deleteMessage">어떻게 하시겠습니까?</p>
             <div class="delete-modal-buttons">
                 <button class="delete-cancel-btn" onclick="closeDeleteModal()">취소</button>
+                <button class="edit-btn" onclick="openEditModal()">수정</button>
                 <button class="delete-confirm-btn" onclick="confirmDelete()">삭제</button>
             </div>
         </div>
     </div>
-    
+
     <div class="modal" id="addModal">
         <div class="modal-content">
-            <h2>학원 추가하기</h2>
+            <h2 id="modalTitle">학원 추가하기</h2>
             <div class="form-group">
                 <label>학원 이름</label>
                 <input type="text" id="className" placeholder="예: 영어학원" maxlength="15">
@@ -787,19 +799,19 @@
             </div>
             <div class="modal-buttons">
                 <button class="cancel-btn" onclick="closeModal()">취소</button>
-                <button class="save-btn" onclick="saveClass()">저장</button>
+                <button class="save-btn" id="saveButton" onclick="saveClass()">저장</button>
             </div>
         </div>
     </div>
-    
+
     <!-- 토스트 메시지 -->
     <div class="toast" id="toast"></div>
-    
+
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getDatabase, ref, set, onValue, push, remove } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
-        
+
         // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyD-6zB-bXMSFnfkuflQ54RePB7bpOsIyZU",
@@ -810,11 +822,11 @@
             messagingSenderId: "425647803819",
             appId: "1:425647803819:web:fbc9adf8baced83d5556ee"
         };
-        
+
         // Firebase 초기화
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        
+
         // 전역 변수를 window 객체에 할당하여 다른 스크립트에서 접근 가능하게 함
         window.firebaseApp = app;
         window.firebaseDatabase = database;
@@ -823,14 +835,14 @@
         window.firebaseOnValue = onValue;
         window.firebasePush = push;
         window.firebaseRemove = remove;
-        
+
         // Firebase 연결 확인
         const connectedRef = ref(database, '.info/connected');
         onValue(connectedRef, (snapshot) => {
             const connected = snapshot.val();
             const indicator = document.getElementById('onlineIndicator');
             const syncStatus = document.getElementById('syncStatus');
-            
+
             if (connected) {
                 indicator.className = 'online-indicator';
                 syncStatus.textContent = '🔗 실시간 동기화 활성화';
@@ -843,28 +855,58 @@
                 window.isFirebaseConnected = false;
             }
         });
-        
+
         // 초기화 완료 신호
         window.firebaseReady = true;
         if (window.initApp) {
             window.initApp();
         }
     </script>
-    
+
     <script>
         let schedule = {};
         let selectedColor = '#4ecdc4';
         let deleteTargetId = null;
+        let editingClassId = null;
         let scheduleId = null;
         let isConnected = false;
-        
+        let hasInitialized = false;
+        let initPromise = null;
+
+        const LEGACY_STORAGE_KEY = 'academySchedule';
+        const STORAGE_KEY_PREFIX = 'academySchedule:';
+
+        function getStorageKey(targetScheduleId) {
+            return `${STORAGE_KEY_PREFIX}${targetScheduleId}`;
+        }
+
+        function normalizeScheduleData(data) {
+            if (!data || typeof data !== 'object' || Array.isArray(data)) {
+                return {};
+            }
+            return data;
+        }
+
+        function cacheScheduleData(targetScheduleId, data) {
+            if (!targetScheduleId) return;
+
+            const normalizedData = normalizeScheduleData(data);
+            const serializedData = JSON.stringify(normalizedData);
+            localStorage.setItem(getStorageKey(targetScheduleId), serializedData);
+
+            if (targetScheduleId === scheduleId) {
+                localStorage.setItem(LEGACY_STORAGE_KEY, serializedData);
+            }
+        }
+
         // Firebase 실시간 동기화 관리
         class FirebaseScheduleSync {
             constructor() {
                 this.baseUrl = window.location.origin + window.location.pathname;
                 this.unsubscribe = null;
+                this.reconnectTimer = null;
             }
-            
+
             // 스케줄 ID 생성
             generateScheduleId() {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -874,7 +916,7 @@
                 }
                 return result;
             }
-            
+
             // URL에서 스케줄 ID 추출
             getScheduleIdFromUrl() {
                 const hash = window.location.hash;
@@ -883,7 +925,7 @@
                 }
                 return null;
             }
-            
+
             // URL 업데이트
             updateUrl(id) {
                 const newUrl = `#schedule-${id}`;
@@ -891,18 +933,18 @@
                     window.history.replaceState(null, null, newUrl);
                 }
             }
-            
+
             // 공유 URL 생성
             getShareUrl() {
                 return `${this.baseUrl}#schedule-${scheduleId}`;
             }
-            
+
             // 스케줄 그룹 초기화
             async initializeSchedule() {
                 try {
                     // URL에서 스케줄 ID 확인
                     const urlScheduleId = this.getScheduleIdFromUrl();
-                    
+
                     if (urlScheduleId) {
                         scheduleId = urlScheduleId;
                         this.showToast('공유 스케줄에 참여했습니다!');
@@ -916,145 +958,189 @@
                         }
                         this.updateUrl(scheduleId);
                     }
-                    
+
+                    schedule = loadStorageData(scheduleId);
                     await this.startRealtimeSync();
                     this.updateUI();
-                    
+
                 } catch (error) {
                     console.error('스케줄 초기화 실패:', error);
                     this.handleOfflineMode();
                 }
             }
-            
+
             // 실시간 동기화 시작
             async startRealtimeSync() {
                 if (!window.firebaseReady || !window.isFirebaseConnected) {
-                    setTimeout(() => this.startRealtimeSync(), 1000);
+                    this.updateSyncStatus('🔄 Firebase 연결중...');
+                    clearTimeout(this.reconnectTimer);
+                    this.reconnectTimer = setTimeout(() => this.startRealtimeSync(), 1000);
                     return;
                 }
-                
+
                 try {
-                    const scheduleRef = window.firebaseRef(window.firebaseDatabase, `schedules/${scheduleId}`);
-                    
+                    const targetScheduleId = scheduleId;
+                    this.disconnect();
+                    clearTimeout(this.reconnectTimer);
+                    this.reconnectTimer = null;
+
+                    if (!targetScheduleId) {
+                        return;
+                    }
+
+                    const scheduleRef = window.firebaseRef(window.firebaseDatabase, `schedules/${targetScheduleId}`);
+
                     // 실시간 리스너 설정
                     this.unsubscribe = window.firebaseOnValue(scheduleRef, (snapshot) => {
-                        const data = snapshot.val();
-                        if (data) {
-                            const currentDataStr = JSON.stringify(schedule);
-                            const firebaseDataStr = JSON.stringify(data);
-                            
-                            if (currentDataStr !== firebaseDataStr) {
-                                schedule = data;
+                        if (targetScheduleId !== scheduleId) {
+                            return;
+                        }
+
+                        const data = normalizeScheduleData(snapshot.val());
+                        const currentDataStr = JSON.stringify(schedule);
+                        const firebaseDataStr = JSON.stringify(data);
+
+                        if (currentDataStr !== firebaseDataStr) {
+                            schedule = data;
+                            cacheScheduleData(targetScheduleId, schedule);
+
+                            if (document.getElementById('scheduleBody').children.length > 0) {
                                 loadSchedule();
-                                this.updateSyncStatus('✅ 동기화 완료');
                             }
+
+                            this.updateSyncStatus('✅ 동기화 완료');
                         }
                     });
-                    
+
                     isConnected = true;
                     this.updateSyncStatus('🔗 실시간 동기화 활성화');
-                    
+
                 } catch (error) {
                     console.error('Firebase 동기화 시작 실패:', error);
                     this.handleOfflineMode();
                 }
             }
-            
+
             // Firebase에 데이터 저장
             async saveToFirebase() {
                 try {
-                    if (!window.firebaseReady || !scheduleId) return false;
-                    
+                    if (!window.firebaseReady || !scheduleId || !window.isFirebaseConnected) {
+                        this.updateSyncStatus('📱 오프라인 모드 (로컬 저장)');
+                        return false;
+                    }
+
                     const scheduleRef = window.firebaseRef(window.firebaseDatabase, `schedules/${scheduleId}`);
-                    await window.firebaseSet(scheduleRef, schedule);
-                    
-                    localStorage.setItem('academySchedule', JSON.stringify(schedule));
+                    if (Object.keys(schedule).length === 0) {
+                        await window.firebaseRemove(scheduleRef);
+                    } else {
+                        await window.firebaseSet(scheduleRef, schedule);
+                    }
+
                     localStorage.setItem('scheduleId', scheduleId);
-                    
+
                     this.updateSyncStatus('✅ 저장 완료');
                     return true;
-                    
+
                 } catch (error) {
                     console.error('Firebase 저장 실패:', error);
                     this.updateSyncStatus('❌ 저장 실패', true);
                     return false;
                 }
             }
-            
+
             // 새로운 그룹 생성
             async createNewGroup() {
                 try {
                     scheduleId = this.generateScheduleId();
                     localStorage.setItem('scheduleId', scheduleId);
                     this.updateUrl(scheduleId);
-                    
+                    cacheScheduleData(scheduleId, schedule);
+
                     await this.saveToFirebase();
                     await this.startRealtimeSync();
                     this.updateUI();
-                    
+
                     this.showToast('새로운 스케줄 그룹이 생성되었습니다!');
-                    
+
                 } catch (error) {
                     console.error('새 그룹 생성 실패:', error);
                     this.showToast('그룹 생성에 실패했습니다.');
                 }
             }
-            
+
             // UI 업데이트
             updateUI() {
                 document.getElementById('currentScheduleId').textContent = scheduleId || '연결 안됨';
                 document.getElementById('shareUrl').textContent = this.getShareUrl();
             }
-            
+
             // 동기화 상태 업데이트
             updateSyncStatus(message, isError = false) {
                 const statusElement = document.getElementById('syncStatus');
                 statusElement.textContent = message;
                 statusElement.className = isError ? 'sync-status error' : 'sync-status';
             }
-            
+
             // 오프라인 모드 처리
             handleOfflineMode() {
                 isConnected = false;
                 this.updateSyncStatus('📱 오프라인 모드 (로컬 저장)', false);
-                
+
                 scheduleId = localStorage.getItem('scheduleId') || this.generateScheduleId();
                 localStorage.setItem('scheduleId', scheduleId);
                 this.updateUrl(scheduleId);
+                schedule = loadStorageData(scheduleId);
                 this.updateUI();
             }
-            
+
             // 토스트 메시지 표시
             showToast(message) {
                 const toast = document.getElementById('toast');
                 toast.textContent = message;
                 toast.classList.add('show');
-                
+
                 setTimeout(() => {
                     toast.classList.remove('show');
                 }, 3000);
             }
-            
+
             // 연결 해제
             disconnect() {
                 if (this.unsubscribe) {
                     this.unsubscribe();
                     this.unsubscribe = null;
                 }
+                clearTimeout(this.reconnectTimer);
+                this.reconnectTimer = null;
                 isConnected = false;
             }
         }
-        
+
         // 전역 인스턴스
         const firebaseSync = new FirebaseScheduleSync();
-        
+
         // 안전한 로컬스토리지 로드
-        function loadStorageData() {
+        function loadStorageData(targetScheduleId = scheduleId) {
             try {
-                const data = localStorage.getItem('academySchedule');
+                if (targetScheduleId) {
+                    const scopedData = localStorage.getItem(getStorageKey(targetScheduleId));
+                    if (scopedData) {
+                        const parsed = JSON.parse(scopedData);
+                        if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+                            return parsed;
+                        }
+                    }
+
+                    const savedId = localStorage.getItem('scheduleId');
+                    if (savedId !== targetScheduleId) {
+                        return {};
+                    }
+                }
+
+                const data = localStorage.getItem(LEGACY_STORAGE_KEY);
                 if (data) {
                     const parsed = JSON.parse(data);
-                    if (typeof parsed === 'object' && parsed !== null) {
+                    if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
                         return parsed;
                     }
                 }
@@ -1063,16 +1149,16 @@
             }
             return {};
         }
-        
+
         // 안전한 데이터 저장
         async function saveStorageData() {
             try {
                 // 로컬 저장
-                localStorage.setItem('academySchedule', JSON.stringify(schedule));
-                
+                cacheScheduleData(scheduleId, schedule);
+
                 // Firebase 저장
                 const success = await firebaseSync.saveToFirebase();
-                if (!success) {
+                if (!success && window.isFirebaseConnected) {
                     firebaseSync.showToast('저장에 실패했습니다. 다시 시도해주세요.');
                 }
             } catch (error) {
@@ -1080,7 +1166,7 @@
                 firebaseSync.showToast('저장에 실패했습니다.');
             }
         }
-        
+
         // 시간대 생성
         const timeSlots = [];
         for (let hour = 8; hour <= 22; hour++) {
@@ -1093,170 +1179,186 @@
                 hour: hour
             });
         }
-        
+
         // 초기화
         async function init() {
-            await firebaseSync.initializeSchedule();
-            
-            schedule = loadStorageData();
-            generateScheduleTable();
-            loadSchedule();
-            setupEventListeners();
-            
-            document.getElementById('startTime').value = '09:00';
-            document.getElementById('endTime').value = '10:00';
-            
-            window.addEventListener('hashchange', handleUrlChange);
+            if (hasInitialized) {
+                return;
+            }
+
+            if (initPromise) {
+                return initPromise;
+            }
+
+            initPromise = (async () => {
+                await firebaseSync.initializeSchedule();
+
+                generateScheduleTable();
+                loadSchedule();
+                setupEventListeners();
+
+                document.getElementById('startTime').value = '09:00';
+                document.getElementById('endTime').value = '10:00';
+
+                window.addEventListener('hashchange', handleUrlChange);
+                hasInitialized = true;
+            })();
+
+            try {
+                await initPromise;
+            } catch (error) {
+                initPromise = null;
+                throw error;
+            }
         }
-        
+
         // URL 해시 변경 처리
         async function handleUrlChange() {
             const newScheduleId = firebaseSync.getScheduleIdFromUrl();
             if (newScheduleId && newScheduleId !== scheduleId) {
+                firebaseSync.disconnect();
                 scheduleId = newScheduleId;
-                schedule = loadStorageData();
+                schedule = loadStorageData(scheduleId);
                 loadSchedule();
                 firebaseSync.updateUI();
                 await firebaseSync.startRealtimeSync();
                 firebaseSync.showToast('다른 스케줄 그룹으로 이동했습니다!');
             }
         }
-        
+
         // 이벤트 리스너 설정
         function setupEventListeners() {
             document.querySelectorAll('.color-option').forEach(option => {
                 option.addEventListener('click', function() {
-                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selectedColor = this.dataset.color;
+                    setSelectedColor(this.dataset.color);
                 });
             });
-            
+
             document.getElementById('startTime').addEventListener('change', validateTimes);
             document.getElementById('endTime').addEventListener('change', validateTimes);
-            
+
             document.getElementById('className').addEventListener('input', function() {
                 clearError('nameError');
             });
-            
+
             document.querySelectorAll('.day-check').forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
                     clearError('dayError');
                 });
             });
         }
-        
+
         // 시간 검증
         function validateTimes() {
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
-            
+
             clearError('startTimeError');
             clearError('endTimeError');
-            
+
             if (startTime && endTime && startTime >= endTime) {
                 showError('endTimeError', '종료 시간은 시작 시간보다 늦어야 합니다.');
             }
         }
-        
+
         // 에러 표시
         function showError(elementId, message) {
             const errorElement = document.getElementById(elementId);
             errorElement.textContent = message;
             errorElement.classList.add('show');
         }
-        
+
         // 에러 숨기기
         function clearError(elementId) {
             const errorElement = document.getElementById(elementId);
             errorElement.classList.remove('show');
         }
-        
+
         // 모든 에러 숨기기
         function clearAllErrors() {
             document.querySelectorAll('.error-message').forEach(element => {
                 element.classList.remove('show');
             });
         }
-        
+
         // 스케줄 테이블 생성
         function generateScheduleTable() {
             const tbody = document.getElementById('scheduleBody');
             tbody.innerHTML = '';
-            
+
             timeSlots.forEach(time => {
                 const row = document.createElement('tr');
                 row.innerHTML = `<td class="time-header">${time.display}</td>`;
-                
+
                 for (let day = 1; day <= 7; day++) {
                     row.innerHTML += `<td id="cell-${day}-${time.hour}" class="schedule-cell"></td>`;
                 }
-                
+
                 tbody.appendChild(row);
             });
         }
-        
+
         // 스케줄 로드
         function loadSchedule() {
             document.querySelectorAll('.schedule-cell').forEach(cell => {
                 cell.innerHTML = '';
             });
-            
+
             for (const key in schedule) {
                 const item = schedule[key];
                 if (!item || !item.startTime || !item.endTime || !item.day) {
                     continue;
                 }
-                
+
                 displayScheduleItem(key, item);
             }
-            
+
             document.querySelectorAll('.schedule-cell').forEach(cell => {
                 if (cell.innerHTML === '') {
                     cell.innerHTML = '<div class="empty-cell">-</div>';
                 }
             });
         }
-        
+
         // 개별 스케줄 아이템 표시
         function displayScheduleItem(key, item) {
             const [startHour, startMin] = item.startTime.split(':').map(Number);
             const [endHour, endMin] = item.endTime.split(':').map(Number);
-            
+
             if (startHour < 8 || startHour > 22) return;
-            
+
             const startCellId = `cell-${item.day}-${startHour}`;
             const startCell = document.getElementById(startCellId);
-            
+
             if (startCell) {
                 const classDiv = document.createElement('div');
                 classDiv.className = 'class-item';
                 classDiv.style.background = item.color || '#4ecdc4';
-                
+
                 const topOffset = (startMin / 60) * 100;
                 classDiv.style.top = `${topOffset}%`;
-                
+
                 const startTotalMin = startHour * 60 + startMin;
                 const endTotalMin = endHour * 60 + endMin;
                 const durationMin = endTotalMin - startTotalMin;
-                
+
                 const heightPx = (durationMin / 60) * 60;
                 classDiv.style.height = `${Math.max(heightPx, 25)}px`;
-                
+
                 const startTimeDisplay = formatTimeForDisplay(item.startTime);
                 const endTimeDisplay = formatTimeForDisplay(item.endTime);
-                
+
                 classDiv.innerHTML = `
                     <div class="class-name">${item.name}</div>
                     <div class="class-time">${startTimeDisplay}-${endTimeDisplay}</div>
                 `;
-                
+
                 classDiv.dataset.id = key;
                 classDiv.onclick = () => handleClassClick(key);
                 startCell.appendChild(classDiv);
             }
         }
-        
+
         // 표시용 시간 포맷 변환
         function formatTimeForDisplay(time) {
             const [hour, min] = time.split(':').map(Number);
@@ -1265,59 +1367,98 @@
             const minStr = min > 0 ? `:${min.toString().padStart(2, '0')}` : '';
             return `${period} ${displayHour}${minStr}`;
         }
-        
-        // 모달 관련 함수들
-        function openModal() {
-            clearAllErrors();
-            document.getElementById('addModal').style.display = 'flex';
+
+        function setSelectedColor(color) {
+            selectedColor = color || '#4ecdc4';
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.toggle('selected', option.dataset.color === selectedColor);
+            });
         }
-        
-        function closeModal() {
-            document.getElementById('addModal').style.display = 'none';
+
+        function resetModalForm() {
+            editingClassId = null;
             document.getElementById('className').value = '';
             document.querySelectorAll('.day-check').forEach(checkbox => {
                 checkbox.checked = false;
             });
             document.getElementById('startTime').value = '09:00';
             document.getElementById('endTime').value = '10:00';
+            document.getElementById('modalTitle').textContent = '학원 추가하기';
+            document.getElementById('saveButton').textContent = '저장';
+            setSelectedColor('#4ecdc4');
+        }
+
+        // 모달 관련 함수들
+        function openModal() {
+            resetModalForm();
+            clearAllErrors();
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').style.display = 'none';
+            resetModalForm();
             clearAllErrors();
         }
-        
+
+        function openEditModal(id = deleteTargetId) {
+            const item = schedule[id];
+            if (!item) {
+                return;
+            }
+
+            closeDeleteModal();
+            resetModalForm();
+            editingClassId = id;
+
+            document.getElementById('modalTitle').textContent = '학원 수정하기';
+            document.getElementById('saveButton').textContent = '수정 저장';
+            document.getElementById('className').value = item.name || '';
+            document.getElementById('startTime').value = item.startTime || '09:00';
+            document.getElementById('endTime').value = item.endTime || '10:00';
+            document.querySelectorAll('.day-check').forEach(checkbox => {
+                checkbox.checked = checkbox.value === String(item.day);
+            });
+            setSelectedColor(item.color || '#4ecdc4');
+            clearAllErrors();
+            document.getElementById('addModal').style.display = 'flex';
+        }
+
         // 입력 검증
         function validateInput() {
             let isValid = true;
             clearAllErrors();
-            
+
             const name = document.getElementById('className').value.trim();
             const selectedDays = Array.from(document.querySelectorAll('.day-check:checked')).map(cb => cb.value);
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
-            
+
             if (!name) {
                 showError('nameError', '학원 이름을 입력해주세요.');
                 isValid = false;
             }
-            
+
             if (selectedDays.length === 0) {
                 showError('dayError', '요일을 선택해주세요.');
                 isValid = false;
             }
-            
+
             if (!startTime) {
                 showError('startTimeError', '시작 시간을 선택해주세요.');
                 isValid = false;
             }
-            
+
             if (!endTime) {
                 showError('endTimeError', '종료 시간을 선택해주세요.');
                 isValid = false;
             }
-            
+
             if (startTime && endTime && startTime >= endTime) {
                 showError('endTimeError', '종료 시간은 시작 시간보다 늦어야 합니다.');
                 isValid = false;
             }
-            
+
             if (startTime) {
                 const [hour] = startTime.split(':').map(Number);
                 if (hour < 8 || hour > 22) {
@@ -1325,7 +1466,7 @@
                     isValid = false;
                 }
             }
-            
+
             if (endTime) {
                 const [hour] = endTime.split(':').map(Number);
                 if (hour < 8 || hour > 23) {
@@ -1333,30 +1474,36 @@
                     isValid = false;
                 }
             }
-            
+
             return isValid;
         }
-        
+
         // 학원 저장
         async function saveClass() {
             if (!validateInput()) {
                 return;
             }
-            
+
             const name = document.getElementById('className').value.trim();
             const selectedDays = Array.from(document.querySelectorAll('.day-check:checked')).map(cb => cb.value);
             const startTime = document.getElementById('startTime').value;
             const endTime = document.getElementById('endTime').value;
-            
+            const ignoredIds = editingClassId ? new Set([editingClassId]) : new Set();
+            const isEditing = Boolean(editingClassId);
+
             const dayNames = ['', '월', '화', '수', '목', '금', '토', '일'];
             for (const day of selectedDays) {
-                if (checkOverlap(day, startTime, endTime)) {
-                    const overlapInfo = getOverlapInfo(day, startTime, endTime);
+                if (checkOverlap(day, startTime, endTime, ignoredIds)) {
+                    const overlapInfo = getOverlapInfo(day, startTime, endTime, ignoredIds);
                     showError('dayError', `${dayNames[day]}요일 ${formatTimeForDisplay(startTime)}-${formatTimeForDisplay(endTime)} 시간대에 이미 "${overlapInfo}"이(가) 있습니다.`);
                     return;
                 }
             }
-            
+
+            if (isEditing) {
+                delete schedule[editingClassId];
+            }
+
             selectedDays.forEach(day => {
                 const id = Date.now().toString() + '-' + day + '-' + Math.random().toString(36).substr(2, 9);
                 schedule[id] = {
@@ -1367,28 +1514,31 @@
                     color: selectedColor
                 };
             });
-            
+
             await saveStorageData();
             loadSchedule();
             closeModal();
-            firebaseSync.showToast(`${name} 학원이 추가되었습니다!`);
+            firebaseSync.showToast(`${name} 학원이 ${isEditing ? '수정' : '추가'}되었습니다!`);
         }
-        
+
         // 중복 체크 함수들
-        function getOverlapInfo(day, startTime, endTime) {
+        function getOverlapInfo(day, startTime, endTime, ignoredIds = new Set()) {
             const [startHour, startMin] = startTime.split(':').map(Number);
             const [endHour, endMin] = endTime.split(':').map(Number);
             const startTotalMin = startHour * 60 + startMin;
             const endTotalMin = endHour * 60 + endMin;
-            
+
             for (const key in schedule) {
                 const item = schedule[key];
-                if (item.day === day) {
+                if (ignoredIds.has(key)) {
+                    continue;
+                }
+                if (String(item.day) === String(day)) {
                     const [itemStartHour, itemStartMin] = item.startTime.split(':').map(Number);
                     const [itemEndHour, itemEndMin] = item.endTime.split(':').map(Number);
                     const itemStartTotalMin = itemStartHour * 60 + itemStartMin;
                     const itemEndTotalMin = itemEndHour * 60 + itemEndMin;
-                    
+
                     if ((startTotalMin >= itemStartTotalMin && startTotalMin < itemEndTotalMin) ||
                         (endTotalMin > itemStartTotalMin && endTotalMin <= itemEndTotalMin) ||
                         (startTotalMin <= itemStartTotalMin && endTotalMin >= itemEndTotalMin)) {
@@ -1398,21 +1548,24 @@
             }
             return '';
         }
-        
-        function checkOverlap(day, startTime, endTime) {
+
+        function checkOverlap(day, startTime, endTime, ignoredIds = new Set()) {
             const [startHour, startMin] = startTime.split(':').map(Number);
             const [endHour, endMin] = endTime.split(':').map(Number);
             const startTotalMin = startHour * 60 + startMin;
             const endTotalMin = endHour * 60 + endMin;
-            
+
             for (const key in schedule) {
                 const item = schedule[key];
-                if (item.day === day) {
+                if (ignoredIds.has(key)) {
+                    continue;
+                }
+                if (String(item.day) === String(day)) {
                     const [itemStartHour, itemStartMin] = item.startTime.split(':').map(Number);
                     const [itemEndHour, itemEndMin] = item.endTime.split(':').map(Number);
                     const itemStartTotalMin = itemStartHour * 60 + itemStartMin;
                     const itemEndTotalMin = itemEndHour * 60 + itemEndMin;
-                    
+
                     if ((startTotalMin >= itemStartTotalMin && startTotalMin < itemEndTotalMin) ||
                         (endTotalMin > itemStartTotalMin && endTotalMin <= itemEndTotalMin) ||
                         (startTotalMin <= itemStartTotalMin && endTotalMin >= itemEndTotalMin)) {
@@ -1422,17 +1575,17 @@
             }
             return false;
         }
-        
+
         // 공유 모달 관련 함수들
         function openShareModal() {
             firebaseSync.updateUI();
             document.getElementById('shareModal').style.display = 'flex';
         }
-        
+
         function closeShareModal() {
             document.getElementById('shareModal').style.display = 'none';
         }
-        
+
         function copyShareUrl() {
             const shareUrl = firebaseSync.getShareUrl();
             if (navigator.clipboard) {
@@ -1449,29 +1602,29 @@
                 firebaseSync.showToast('링크가 복사되었습니다! 가족에게 공유해주세요.');
             }
         }
-        
+
         function shareViaKakao() {
             const shareData = {
                 title: '우리 딸 학원 스케줄',
                 text: '함께 스케줄을 관리해요!',
                 url: firebaseSync.getShareUrl()
             };
-            
+
             if (navigator.share) {
                 navigator.share(shareData);
             } else {
                 copyShareUrl();
             }
         }
-        
+
         async function createNewGroup() {
             if (confirm('새로운 스케줄 그룹을 만들시겠습니까?\n현재 스케줄이 새 그룹으로 복사됩니다.')) {
                 await firebaseSync.createNewGroup();
                 closeShareModal();
             }
         }
-        
-        // 삭제 관련 함수들
+
+        // 일정 관리 관련 함수들
         function openDeleteModal(id) {
             const item = schedule[id];
             if (item) {
@@ -1479,21 +1632,21 @@
                 const startTime = formatTimeForDisplay(item.startTime);
                 const endTime = formatTimeForDisplay(item.endTime);
                 const dayNames = ['', '월', '화', '수', '목', '금', '토', '일'];
-                
-                document.getElementById('deleteMessage').innerHTML = 
+
+                document.getElementById('deleteMessage').innerHTML =
                     `<strong>"${item.name}"</strong><br>
                      ${dayNames[item.day]}요일 ${startTime} - ${endTime}<br><br>
-                     정말 삭제하시겠습니까?`;
-                
+                     수정하거나 삭제할 수 있어요.`;
+
                 document.getElementById('deleteModal').style.display = 'flex';
             }
         }
-        
+
         function closeDeleteModal() {
             document.getElementById('deleteModal').style.display = 'none';
             deleteTargetId = null;
         }
-        
+
         async function confirmDelete() {
             if (deleteTargetId && schedule[deleteTargetId]) {
                 const deletedName = schedule[deleteTargetId].name;
@@ -1504,17 +1657,20 @@
                 firebaseSync.showToast(`${deletedName} 학원이 삭제되었습니다.`);
             }
         }
-        
+
         function handleClassClick(id) {
             openDeleteModal(id);
         }
-        
+
         // 모달 외부 클릭 시 닫기
         window.onclick = function(event) {
             const addModal = document.getElementById('addModal');
             const deleteModal = document.getElementById('deleteModal');
             const shareModal = document.getElementById('shareModal');
-            
+
+            if (event.target === addModal) {
+                closeModal();
+            }
             if (event.target === deleteModal) {
                 closeDeleteModal();
             }
@@ -1522,14 +1678,14 @@
                 closeShareModal();
             }
         }
-        
+
         // ESC 키로 모달 닫기
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const addModal = document.getElementById('addModal');
                 const deleteModal = document.getElementById('deleteModal');
                 const shareModal = document.getElementById('shareModal');
-                
+
                 if (addModal.style.display === 'flex') {
                     closeModal();
                 }
@@ -1541,33 +1697,33 @@
                 }
             }
         });
-        
+
         // 모바일 최적화
         document.addEventListener('touchstart', function() {}, {passive: true});
         document.addEventListener('touchmove', function() {}, {passive: true});
-        
+
         function setVH() {
             let vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         }
-        
+
         window.addEventListener('resize', setVH);
         window.addEventListener('orientationchange', setVH);
         setVH();
-        
+
         // 페이지 언로드 시 연결 해제
         window.addEventListener('beforeunload', () => {
             firebaseSync.disconnect();
         });
-        
+
         // 전역 초기화 함수 (Firebase 준비 완료 후 호출)
         window.initApp = init;
-        
+
         // Firebase가 이미 준비되었다면 즉시 초기화
         if (window.firebaseReady) {
             init();
         }
-        
+
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
             if (window.firebaseReady) {
