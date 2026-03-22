@@ -695,6 +695,7 @@
             z-index: 3000;
             opacity: 0;
             transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
         .toast.show {
@@ -1102,10 +1103,7 @@
         }
 
         function getMinimumClassHeight(durationMin) {
-            if (isPrintLayout) {
-                return durationMin <= 30 ? 20 : 16;
-            }
-            return durationMin <= 30 ? 40 : 28;
+            return 0;
         }
 
         function updateLayoutMetrics() {
