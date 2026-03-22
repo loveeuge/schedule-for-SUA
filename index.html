@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>우리 딸 학원 스케줄</title>
     <style>
+        :root {
+            --slot-height: 60px;
+            --time-header-width: 50px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -74,11 +79,14 @@
         }
 
         .controls {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
         }
 
-        .add-btn {
-            width: 100%;
+        .add-btn,
+        .print-btn {
+            flex: 1;
             padding: 14px;
             border: none;
             border-radius: 12px;
@@ -92,9 +100,27 @@
             touch-action: manipulation;
         }
 
+        .add-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
         .add-btn:active {
             transform: scale(0.98);
             box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .print-btn {
+            flex: 0.8;
+            background: linear-gradient(135deg, #1d976c, #2f80ed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(47, 128, 237, 0.28);
+        }
+
+        .print-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(47, 128, 237, 0.38);
         }
 
         .schedule-wrapper {
@@ -130,7 +156,7 @@
             text-align: center;
             border: 1px solid #e9ecef;
             position: relative;
-            height: 60px;
+            height: var(--slot-height);
             vertical-align: top;
             min-width: 0;
         }
@@ -139,8 +165,8 @@
             background: #f8f9fa;
             font-weight: 600;
             color: #495057;
-            width: 50px;
-            min-width: 50px;
+            width: var(--time-header-width);
+            min-width: var(--time-header-width);
             padding: 8px 2px;
             font-size: 10px;
             line-height: 1.2;
@@ -148,7 +174,7 @@
 
         .schedule-cell {
             position: relative;
-            width: calc((100% - 50px) / 7);
+            width: calc((100% - var(--time-header-width)) / 7);
         }
 
         .class-item {
@@ -676,6 +702,89 @@
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0.3; }
         }
+
+        @page {
+            size: A4 portrait;
+            margin: 4mm;
+        }
+
+        @media print {
+            html,
+            body {
+                background: white !important;
+                min-height: auto;
+            }
+
+            body {
+                padding: 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .container {
+                max-width: none;
+                background: white;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+                backdrop-filter: none;
+            }
+
+            h1 {
+                margin-bottom: 3mm;
+                font-size: 14px;
+            }
+
+            .share-status,
+            .controls,
+            .online-indicator,
+            .modal,
+            .delete-modal,
+            .share-modal,
+            .toast {
+                display: none !important;
+            }
+
+            .schedule-wrapper {
+                margin: 0;
+                padding: 0;
+                overflow: visible;
+            }
+
+            .schedule-table {
+                table-layout: fixed;
+                box-shadow: none;
+                border-radius: 0;
+                font-size: 9px;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .schedule-table th {
+                padding: 3px 1px;
+                font-size: 9px;
+            }
+
+            .schedule-table td {
+                padding: 0;
+            }
+
+            .time-header {
+                padding: 3px 1px;
+                font-size: 7px;
+            }
+
+            .class-item {
+                left: 0;
+                right: 0;
+                border-radius: 3px;
+                box-shadow: none;
+            }
+
+            .empty-cell {
+                font-size: 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -689,6 +798,7 @@
 
         <div class="controls">
             <button class="add-btn" onclick="openModal()">➕ 학원 추가</button>
+            <button class="print-btn" onclick="printSchedule()">🖨️ 인쇄</button>
         </div>
 
         <div class="schedule-wrapper">
@@ -896,11 +1006,22 @@
         let editingClassId = null;
         let scheduleId = null;
         let isConnected = false;
+        let isPrintLayout = false;
         let hasInitialized = false;
         let initPromise = null;
 
         const LEGACY_STORAGE_KEY = 'academySchedule';
         const STORAGE_KEY_PREFIX = 'academySchedule:';
+        const SCREEN_SLOT_HEIGHT = 60;
+        const SCREEN_TIME_HEADER_WIDTH = 50;
+        const PRINT_TIME_HEADER_WIDTH = 34;
+        const PX_PER_MM = 96 / 25.4;
+        const A4_PORTRAIT_HEIGHT_MM = 297;
+        const PRINT_PAGE_MARGIN_MM = 4;
+        const PRINT_TITLE_BLOCK_MM = 8;
+        const PRINT_TABLE_HEADER_MM = 8;
+        const PRINT_RESERVED_MM = 16;
+        const PRINT_FILL_RATIO = 0.94;
 
         function getStorageKey(targetScheduleId) {
             return `${STORAGE_KEY_PREFIX}${targetScheduleId}`;
@@ -923,6 +1044,37 @@
             if (targetScheduleId === scheduleId) {
                 localStorage.setItem(LEGACY_STORAGE_KEY, serializedData);
             }
+        }
+
+        function getSlotHeight() {
+            if (!isPrintLayout) {
+                return SCREEN_SLOT_HEIGHT;
+            }
+
+            const printableHeightMm =
+                A4_PORTRAIT_HEIGHT_MM -
+                (PRINT_PAGE_MARGIN_MM * 2) -
+                PRINT_TITLE_BLOCK_MM -
+                PRINT_TABLE_HEADER_MM -
+                PRINT_RESERVED_MM;
+
+            return ((printableHeightMm * PX_PER_MM) / timeSlots.length) * PRINT_FILL_RATIO;
+        }
+
+        function getTimeHeaderWidth() {
+            return isPrintLayout ? PRINT_TIME_HEADER_WIDTH : SCREEN_TIME_HEADER_WIDTH;
+        }
+
+        function getMinimumClassHeight(durationMin) {
+            if (isPrintLayout) {
+                return durationMin <= 30 ? 20 : 16;
+            }
+            return durationMin <= 30 ? 34 : 25;
+        }
+
+        function updateLayoutMetrics() {
+            document.documentElement.style.setProperty('--slot-height', `${getSlotHeight()}px`);
+            document.documentElement.style.setProperty('--time-header-width', `${getTimeHeaderWidth()}px`);
         }
 
         // Firebase 실시간 동기화 관리
@@ -1219,6 +1371,7 @@
             initPromise = (async () => {
                 await firebaseSync.initializeSchedule();
 
+                updateLayoutMetrics();
                 generateScheduleTable();
                 loadSchedule();
                 setupEventListeners();
@@ -1368,8 +1521,8 @@
                 const endTotalMin = endHour * 60 + endMin;
                 const durationMin = endTotalMin - startTotalMin;
 
-                const heightPx = (durationMin / 60) * 60;
-                const minimumHeightPx = durationMin <= 30 ? 34 : 25;
+                const heightPx = (durationMin / 60) * getSlotHeight();
+                const minimumHeightPx = getMinimumClassHeight(durationMin);
                 const displayHeightPx = Math.max(heightPx, minimumHeightPx);
                 classDiv.style.height = `${displayHeightPx}px`;
 
@@ -1772,6 +1925,31 @@
             openDeleteModal(id);
         }
 
+        function setPrintLayout(enabled) {
+            isPrintLayout = enabled;
+            document.body.classList.toggle('printing', enabled);
+            updateLayoutMetrics();
+
+            if (document.getElementById('scheduleBody').children.length > 0) {
+                loadSchedule();
+            }
+        }
+
+        function closeAllPopups() {
+            closeModal();
+            closeDeleteModal();
+            closeShareModal();
+        }
+
+        function printSchedule() {
+            closeAllPopups();
+            setPrintLayout(true);
+
+            setTimeout(() => {
+                window.print();
+            }, 80);
+        }
+
         // 모달 외부 클릭 시 닫기
         window.onclick = function(event) {
             const addModal = document.getElementById('addModal');
@@ -1820,6 +1998,14 @@
         window.addEventListener('resize', setVH);
         window.addEventListener('orientationchange', setVH);
         setVH();
+
+        window.addEventListener('beforeprint', () => {
+            setPrintLayout(true);
+        });
+
+        window.addEventListener('afterprint', () => {
+            setPrintLayout(false);
+        });
 
         // 페이지 언로드 시 연결 해제
         window.addEventListener('beforeunload', () => {
