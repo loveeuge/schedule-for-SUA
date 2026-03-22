@@ -154,9 +154,9 @@
         .class-item {
             background: #4ecdc4;
             color: white;
-            padding: 3px;
+            padding: var(--class-padding, 3px);
             border-radius: 4px;
-            font-size: 9px;
+            font-size: var(--class-base-size, 9px);
             cursor: pointer;
             transition: all 0.2s ease;
             position: absolute;
@@ -181,13 +181,31 @@
 
         .class-name {
             font-weight: 600;
-            font-size: 10px;
-            margin-bottom: 1px;
+            font-size: var(--class-name-size, 10px);
+            margin-bottom: var(--class-name-gap, 1px);
+            width: 100%;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: var(--class-name-lines, 2);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+            line-height: var(--class-name-line-height, 1.05);
+            max-height: calc(var(--class-name-size, 10px) * var(--class-name-line-height, 1.05) * var(--class-name-lines, 2));
         }
 
         .class-time {
-            font-size: 8px;
+            font-size: var(--class-time-size, 8px);
             opacity: 0.9;
+            width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+            line-height: var(--class-time-line-height, 1.05);
         }
 
         .empty-cell {
@@ -1351,29 +1369,113 @@
                 const durationMin = endTotalMin - startTotalMin;
 
                 const heightPx = (durationMin / 60) * 60;
-                classDiv.style.height = `${Math.max(heightPx, 25)}px`;
+                const minimumHeightPx = durationMin <= 30 ? 34 : 25;
+                const displayHeightPx = Math.max(heightPx, minimumHeightPx);
+                classDiv.style.height = `${displayHeightPx}px`;
 
                 const startTimeDisplay = formatTimeForDisplay(item.startTime);
                 const endTimeDisplay = formatTimeForDisplay(item.endTime);
+                applyClassItemSizing(classDiv, displayHeightPx, durationMin);
+                const timeRangeMarkup = buildTimeRangeMarkup(item.startTime, item.endTime, displayHeightPx);
 
                 classDiv.innerHTML = `
                     <div class="class-name">${item.name}</div>
-                    <div class="class-time">${startTimeDisplay}-${endTimeDisplay}</div>
+                    <div class="class-time">${timeRangeMarkup}</div>
                 `;
 
                 classDiv.dataset.id = key;
+                classDiv.title = `${item.name} ${startTimeDisplay}-${endTimeDisplay}`;
                 classDiv.onclick = () => handleClassClick(key);
                 startCell.appendChild(classDiv);
             }
         }
 
+        function applyClassItemSizing(element, displayHeightPx, durationMin) {
+            let nameSize = 10;
+            let timeSize = 8;
+            let padding = 3;
+            let nameGap = 1;
+            let nameLines = 2;
+            let nameLineHeight = 1.05;
+            let timeLineHeight = 1.05;
+
+            if (displayHeightPx <= 28 || durationMin <= 30) {
+                nameSize = 6.5;
+                timeSize = 6;
+                padding = 1;
+                nameGap = 0;
+                nameLines = 2;
+                nameLineHeight = 1;
+                timeLineHeight = 1;
+            } else if (displayHeightPx <= 34) {
+                nameSize = 7.5;
+                timeSize = 6.5;
+                padding = 1.5;
+                nameGap = 0;
+                nameLines = 2;
+                nameLineHeight = 1;
+                timeLineHeight = 1;
+            } else if (displayHeightPx <= 42) {
+                nameSize = 9;
+                timeSize = 7;
+                padding = 2;
+                nameGap = 0;
+                nameLines = 2;
+                nameLineHeight = 1.02;
+                timeLineHeight = 1;
+            }
+
+            element.style.setProperty('--class-base-size', `${timeSize}px`);
+            element.style.setProperty('--class-name-size', `${nameSize}px`);
+            element.style.setProperty('--class-time-size', `${timeSize}px`);
+            element.style.setProperty('--class-padding', `${padding}px`);
+            element.style.setProperty('--class-name-gap', `${nameGap}px`);
+            element.style.setProperty('--class-name-lines', `${nameLines}`);
+            element.style.setProperty('--class-name-line-height', `${nameLineHeight}`);
+            element.style.setProperty('--class-time-line-height', `${timeLineHeight}`);
+        }
+
+        function buildTimeRangeMarkup(startTime, endTime, displayHeightPx) {
+            const start = getTimeDisplayParts(startTime);
+            const end = getTimeDisplayParts(endTime);
+            const samePeriod = start.period === end.period;
+
+            if (displayHeightPx <= 34) {
+                if (samePeriod) {
+                    return `${start.period} ${start.timeText}<br>~${end.timeText}`;
+                }
+                return `${start.period} ${start.timeText}<br>${end.period} ${end.timeText}`;
+            }
+
+            if (displayHeightPx <= 42) {
+                if (samePeriod) {
+                    return `${start.period} ${start.timeText}<br>~ ${end.timeText}`;
+                }
+                return `${start.period} ${start.timeText}<br>~ ${end.period} ${end.timeText}`;
+            }
+
+            if (samePeriod) {
+                return `${start.period} ${start.timeText}-${end.timeText}`;
+            }
+
+            return `${start.period} ${start.timeText}-${end.period} ${end.timeText}`;
+        }
+
         // 표시용 시간 포맷 변환
         function formatTimeForDisplay(time) {
+            const { period, timeText } = getTimeDisplayParts(time);
+            return `${period} ${timeText}`;
+        }
+
+        function getTimeDisplayParts(time) {
             const [hour, min] = time.split(':').map(Number);
             const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
             const period = hour >= 12 ? 'PM' : 'AM';
-            const minStr = min > 0 ? `:${min.toString().padStart(2, '0')}` : '';
-            return `${period} ${displayHour}${minStr}`;
+            const minStr = `:${min.toString().padStart(2, '0')}`;
+            return {
+                period,
+                timeText: `${displayHour}${minStr}`
+            };
         }
 
         function setSelectedColor(color) {
